@@ -174,8 +174,7 @@ public final class UserPanel extends JPanel {
                 final int result = JOptionPane.showConfirmDialog(UserPanel.this, myPanel,
                         "Add User", JOptionPane.OK_CANCEL_OPTION);
                 if (result == JOptionPane.OK_OPTION && xField.getText() != null && xField.getText().length() > 0) {
-
-                    clientContext.user.addUser(xField.getText());
+                    clientContext.user.addUser(xField.getText(), yField.getText());
                     UserPanel.this.getAllUsers(listModel);
                 }
 

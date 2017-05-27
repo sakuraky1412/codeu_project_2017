@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.Calendar;
 import java.util.Properties;
 
-import com.mysql.jdbc.Driver;
+//import com.mysql.jdbc.Driver;
 
 public class MySQLConnection {
     private static final String DATABASE_DRIVER = "com.mysql.jdbc.Driver";
