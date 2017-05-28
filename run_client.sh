@@ -18,4 +18,4 @@ LOCAL_MACHINE="localhost@2007"
 
 cd './bin'
 
-java codeu.chat.ClientMain "$LOCAL_MACHINE"
+java -cp .:/Users/mltaskova/Downloads/mysql-connector-java-6.0.5/mysql-connector-java-6.0.5-bin.jar codeu.chat.ClientMain "$LOCAL_MACHINE"
