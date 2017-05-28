@@ -175,7 +175,9 @@ public class Greek implements EncryptionStrategy {
         int[] input1 = logic.getOriginal();
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < input1.length; i++) {
-            sb.append(Character.toChars(input1[i]));
+            // check if input is valid
+            if (input1[i] >= 0 && input1[i] <= 127)
+                sb.append(Character.toChars(input1[i]));
         }
         return sb.toString();
     }
