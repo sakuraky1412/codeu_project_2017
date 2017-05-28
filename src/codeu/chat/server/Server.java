@@ -101,10 +101,13 @@ public final class Server {
 
       final String name = Serializers.STRING.read(in);
 
-      final User user = controller.newUser(name);
+      final String pass = Serializers.STRING.read(in);
+
+      final User user = controller.newUser(name, pass);
 
       Serializers.INTEGER.write(out, NetworkCode.NEW_USER_RESPONSE);
       Serializers.nullable(User.SERIALIZER).write(out, user);
+
 
     } else if (type == NetworkCode.NEW_CONVERSATION_REQUEST) {
 

@@ -1,26 +1,42 @@
 package codeu.chat.util.mysql;
 
+import codeu.chat.util.Uuid;
+
 import java.sql.*;
-import java.util.Calendar;
 import java.util.Properties;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
+import java.util.Vector;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
-//import com.mysql.jdbc.Driver;
 
-public class MySQLConnection {
+public class MySQLConnection{
     private static final String DATABASE_DRIVER = "com.mysql.jdbc.Driver";
-    // Will likely need to be changed depending on the computer that is running it.
-    private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/codeu?autoReconnect=true&&useSSL=false";
+
+    private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/CodeUChat?autoReconnect=true&&useSSL=false";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "1869";
 
     // Create connection object
     private Connection connection;
-    // Create properties object
+    // Creat properties object
     private Properties properties;
 
+
+    public MySQLConnection()
+    {
+        this.connection = getConnection();
+    }
+
     // Create the actual properties
-    private Properties getProperties() {
-        if (properties == null) {
+    private Properties getProperties(){
+        if (properties == null){
             properties = new Properties();
             properties.setProperty("user", USERNAME);
             properties.setProperty("password", PASSWORD);
@@ -29,12 +45,12 @@ public class MySQLConnection {
     }
 
     // Connect to the database
-    private Connection connect() {
-        if (connection == null) {
-            try {
+    private Connection connect(){
+        if(connection == null){
+            try{
                 Class.forName(DATABASE_DRIVER);
                 connection = DriverManager.getConnection(DATABASE_URL, getProperties());
-            } catch (ClassNotFoundException | SQLException e) {
+            } catch (ClassNotFoundException | SQLException e){
                 System.out.println("There was an error connecting to the database.");
                 e.printStackTrace();
             }
@@ -42,76 +58,165 @@ public class MySQLConnection {
         return connection;
     }
 
-    public Connection getConnection() {
+    public Connection getConnection(){
         return connect();
     }
 
     // Closing the database connection
-    private void disconnect() {
-        if (connection != null) {
-            try {
+    private void disconnect(){
+        if(connection != null){
+            try{
                 connection.close();
                 connection = null;
-            } catch (SQLException e) {
+            } catch (SQLException e){
                 e.printStackTrace();
             }
         }
     }
 
-    public void disconnectConnection() {
+    public void disconnectConnection(){
         disconnect();
     }
 
-    /*
-        ADD METHODS
-        Adds information to the database
-    */
-    public void addUser(String userName) {
-        // Create connection and statement
-        Connection conn = getConnection();
-        Statement state = null;
 
-        try {
-            // Create and execute statement
-            state = conn.createStatement();
-            state.executeUpdate("INSERT INTO Users (NAME, PASSWORD) VALUES (\"" + userName +
-                    "\", NULL");
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+    //WILL NEED TO MAKE SURE STRING AND VARCHAR ARE COMPATIBLE!!
+
+    public void writeConversations(Uuid id, Uuid owner, String title) throws SQLException {
+//        Connection connect = getConnection();
+
+        java.util.Date date = new java.util.Date();
+        java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
+
+        // PreparedStatements can use variables and are more efficient
+        PreparedStatement preparedStatement = connection
+                .prepareStatement("insert into  CodeUChat.Conversations values (?, ?, ?, ?)");
+        // Parameters start with 1
+        preparedStatement.setString(1, Uuid.toString(id));
+        preparedStatement.setString(2, Uuid.toString(owner));
+        preparedStatement.setString(3, title);
+        preparedStatement.setTimestamp(4, timestamp);
+        preparedStatement.executeUpdate();
+    }
+
+    public void writeUsers(Uuid id, String name) throws SQLException {
+//        Connection connect = getConnection();
+
+        // PreparedStatements can use variables and are more efficient
+        PreparedStatement preparedStatement = connection
+                .prepareStatement("insert into  CodeUChat.Users values (?, ?)");
+        // Parameters start with 1
+        preparedStatement.setString(1, Uuid.toString(id));
+        preparedStatement.setString(2, name);
+        preparedStatement.executeUpdate();
+    }
+
+
+    public void writeMessages(Uuid id, Uuid owner, String body) throws SQLException
+    {
+//        Connection connect = getConnection();
+
+        // PreparedStatements can use variables and are more efficient
+        PreparedStatement preparedStatement = connection
+                .prepareStatement("insert into  CodeUChat.Messages values (?, ?, ?, ?)");
+
+        java.util.Date date = new java.util.Date();
+        java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
+
+        // Parameters start with 1
+        preparedStatement.setString(1, Uuid.toString(id));
+        preparedStatement.setTimestamp(2, timestamp);
+        preparedStatement.setString(3, Uuid.toString(owner));
+        preparedStatement.setString(4, body);
+        preparedStatement.executeUpdate();
+    }
+
+
+    public String[] readUsers() throws SQLException {
+
+        // Statements allow to issue SQL queries to the database
+        Statement statement = connection.createStatement();
+        // Result set get the result of the SQL query
+        ResultSet ownerResultSet = statement
+                .executeQuery("select distinct Name from CodeUChat.Users");
+
+        String[] arr = null;
+        while (ownerResultSet.next()) {
+            String em = ownerResultSet.getString("Name");
+            arr = em.split("\n");
+            for (int i = 0; i < arr.length; i++) {
+                System.out.println(arr[i]);
+            }
         }
 
-        disconnectConnection();
+        return arr;
+
     }
 
-    public void addUser(String userName, String password) {
-    }
 
-    ;
+    public String[] readConversations(Uuid owner) throws SQLException {
 
-    public void addConversation(String title, String owner) {
-        // Create connection and statement
-        Connection conn = getConnection();
-        Statement state = null;
+//        Connection connect = getConnection();
 
-        try {
-            // Create nad execute adding a conversation
-            state = conn.createStatement();
-            state.executeUpdate("INSERT INTO Conversations (Title, Owner) VALUES (\"" + title + "\",owner");
-        } catch (SQLException e) {
-            e.printStackTrace();
+//        // Statements allow to issue SQL queries to the database
+//        Statement statement = connection.createStatement();
+//        // Result set get the result of the SQL query
+        PreparedStatement statement = connection.prepareStatement("select * Title from CodeUChat.Conversations where Owner = ?");
+
+        statement.setString(1, Uuid.toString(owner));
+
+        ResultSet ownerResultSet = statement
+                .executeQuery();
+
+        String[] arr = null;
+        while (ownerResultSet.next()) {
+            String em = ownerResultSet.getString("Title");
+            arr = em.split("\n");
+            for (int i = 0; i < arr.length; i++) {
+                System.out.println(arr[i]);
+            }
         }
+
+        return arr;
+
+//        ResultSet titleResultSet = statement
+//                .executeQuery("select distinct Title from CodeUChat.Conversations");
+        //writeResultSet(resultSet);
     }
 
-    public void addConversation(String title, String owner, String password) {
+    //read all the messages from owner
+    public String[] readMessages(Uuid owner) throws SQLException
+    {
+//        Connection connect = getConnection();
+
+        // Statements allow to issue SQL queries to the database
+        PreparedStatement statement = connection.prepareStatement("select Body from CodeUChat.Messages where Owner = ? ");
+        // Result set get the result of the SQL query
+
+        statement.setString(1, Uuid.toString(owner));
+
+        ResultSet ownerResultSet = statement
+                .executeQuery();
+        //writeResultSet(resultSet);
+
+        String[] arr = null;
+        while (ownerResultSet.next()) {
+            String em = ownerResultSet.getString("Body");
+            arr = em.split("\n");
+            for (int i = 0; i < arr.length; i++) {
+                System.out.println(arr[i]);
+            }
+        }
+
+        return arr;
+
     }
 
-    ;
+//    public void writeResultSet()
+//    {
+//        //writing owners into the current session so they can appear in the gui
+//    }
 
-    public void addMessage(String owner, String body, String conversation) {
-        // Fetch timestamp
-        Calendar cal = Calendar.getInstance();
-        java.util.Date date = cal.getTime();
-        java.sql.Timestamp currentTimestamp = new Timestamp(date.getTime());
 
-    }
+
 }

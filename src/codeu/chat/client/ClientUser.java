@@ -78,6 +78,22 @@ public final class ClientUser {
         return (prev != current);
     }
 
+    public boolean signInUser(String name, String pass) {
+        updateUsers();
+
+        final User prev = current;
+        if (name != null) {
+            final User newCurrent = usersByName.first(name);
+            if (newCurrent != null) {
+                if (newCurrent.pass.equals(pass))
+                    current = newCurrent;
+                else
+                    return false;
+            }
+        }
+        return (prev != current);
+    }
+
     public boolean signOutUser() {
         boolean hadCurrent = hasCurrent();
         current = null;
@@ -90,6 +106,7 @@ public final class ClientUser {
 
     /**
      * Add user function with a password
+     *
      * @param name name of user
      * @param pass user password
      */
@@ -109,6 +126,7 @@ public final class ClientUser {
 
     /**
      * Original add user function
+     *
      * @param name name of user
      */
     public void addUser(String name) {

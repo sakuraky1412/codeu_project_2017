@@ -104,6 +104,7 @@ public class Controller implements BasicController {
 
     /**
      * Add new user with password
+     *
      * @param name name of the user
      * @param pass user password
      * @return the newly added user
@@ -117,7 +118,12 @@ public class Controller implements BasicController {
             Serializers.INTEGER.write(connection.out(), NetworkCode.NEW_USER_REQUEST);
             Serializers.STRING.write(connection.out(), name);
             Serializers.STRING.write(connection.out(), pass);
+
             LOG.info("newUser: Request completed.");
+
+            // Quick test to see if user with password request is successfully created
+            // System.out.println("User with password request created.");
+
             // If server response works correctly
             if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_USER_RESPONSE) {
                 response = Serializers.nullable(User.SERIALIZER).read(connection.in());

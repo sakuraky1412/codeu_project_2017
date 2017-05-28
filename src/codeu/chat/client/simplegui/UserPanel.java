@@ -151,9 +151,17 @@ public final class UserPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (userList.getSelectedIndex() != -1) {
-                    final String data = userList.getSelectedValue();
-                    clientContext.user.signInUser(data);
-                    userSignedInLabel.setText("Hello " + data);
+
+                    final String s = (String) JOptionPane.showInputDialog(
+                            UserPanel.this, "Enter password:", "Sign in User", JOptionPane.PLAIN_MESSAGE,
+                            null, null, "");
+                    if (s != null && s.length() > 0) {
+                        final String data = userList.getSelectedValue();
+                        if (clientContext.user.signInUser(data, s))
+                            userSignedInLabel.setText("Hello " + data);
+                        else userSignedInLabel.setText("Incorrect password " + data);
+                    }
+
                 }
             }
         });
@@ -174,11 +182,19 @@ public final class UserPanel extends JPanel {
                 final int result = JOptionPane.showConfirmDialog(UserPanel.this, myPanel,
                         "Add User", JOptionPane.OK_CANCEL_OPTION);
                 if (result == JOptionPane.OK_OPTION && xField.getText() != null && xField.getText().length() > 0) {
-                    clientContext.user.addUser(xField.getText(), yField.getText());
-                    UserPanel.this.getAllUsers(listModel);
+                    clientContext.user.updateUsers();
+                    boolean userExist = false;
+                    for (final User u : clientContext.user.getUsers()) {
+                        if (xField.getText().equals(u.name))
+                            userExist = true;
+                    }
+                    if (userExist)
+                        userSignedInLabel.setText("Username exists " + xField.getText());
+                    else {
+                        clientContext.user.addUser(xField.getText(), yField.getText());
+                        UserPanel.this.getAllUsers(listModel);
+                    }
                 }
-
-
             }
         });
 
