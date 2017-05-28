@@ -165,7 +165,7 @@ public final class Uuid {
 
   // Compute human-readable representation for Uuids
   // Use long internally to avoid negative integers.
-  private static String toString(Uuid id) {
+  public static String toString(Uuid id) {
     final StringBuilder build = new StringBuilder();
     buildString(id, build);
     return String.format("[UUID:%s]", build.substring(1));  // index of 1 to skip initial '.'
