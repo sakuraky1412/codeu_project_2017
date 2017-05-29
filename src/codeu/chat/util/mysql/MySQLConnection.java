@@ -1,17 +1,16 @@
 package codeu.chat.util.mysql;
 
+import codeu.chat.common.User;
 import codeu.chat.util.Uuid;
 
 import java.sql.*;
-import java.util.Properties;
+import java.util.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
-import java.util.Vector;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -84,7 +83,7 @@ public class MySQLConnection{
 
     //WILL NEED TO MAKE SURE STRING AND VARCHAR ARE COMPATIBLE!!
 
-    public void writeConversations(Uuid id, Uuid owner, String title) throws SQLException {
+    public void writeConversations(codeu.chat.common.Uuid id, codeu.chat.common.Uuid owner, String title) throws SQLException {
 //        Connection connect = getConnection();
 
         java.util.Date date = new java.util.Date();
@@ -94,27 +93,38 @@ public class MySQLConnection{
         PreparedStatement preparedStatement = connection
                 .prepareStatement("insert into  CodeUChat.Conversations values (?, ?, ?, ?)");
         // Parameters start with 1
-        preparedStatement.setString(1, Uuid.toString(id));
-        preparedStatement.setString(2, Uuid.toString(owner));
+        preparedStatement.setString(1, codeu.chat.common.Uuids.toString(id));
+        preparedStatement.setString(2, codeu.chat.common.Uuids.toString(owner));
         preparedStatement.setString(3, title);
         preparedStatement.setTimestamp(4, timestamp);
         preparedStatement.executeUpdate();
     }
 
-    public void writeUsers(Uuid id, String name) throws SQLException {
-//        Connection connect = getConnection();
+    public void writeUsers(codeu.chat.common.Uuid id, String name) throws SQLException {
+
+        java.util.Date date = new java.util.Date();
+        java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
         // PreparedStatements can use variables and are more efficient
         PreparedStatement preparedStatement = connection
-                .prepareStatement("insert into  CodeUChat.Users values (?, ?)");
+                .prepareStatement("insert into  CodeUChat.Users values (?, ?, ?)");
         // Parameters start with 1
-        preparedStatement.setString(1, Uuid.toString(id));
+        preparedStatement.setString(1, codeu.chat.common.Uuids.toString(id));
         preparedStatement.setString(2, name);
+        preparedStatement.setTimestamp(3, timestamp);
         preparedStatement.executeUpdate();
+
+//        Collection<User> temp = readUsers();
+//        User[] temp2 = (User[]) temp.toArray();
+//        for (int i = 0; i < temp.size(); i++)
+//        {
+//            System.out.println(temp2[i].toString());
+//        }
+
     }
 
 
-    public void writeMessages(Uuid id, Uuid owner, String body) throws SQLException
+    public void writeMessages(codeu.chat.common.Uuid id, codeu.chat.common.Uuid owner, String body) throws SQLException
     {
 //        Connection connect = getConnection();
 
@@ -126,15 +136,41 @@ public class MySQLConnection{
         java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
         // Parameters start with 1
-        preparedStatement.setString(1, Uuid.toString(id));
+        preparedStatement.setString(1, codeu.chat.common.Uuids.toString(id));
         preparedStatement.setTimestamp(2, timestamp);
-        preparedStatement.setString(3, Uuid.toString(owner));
+        preparedStatement.setString(3, codeu.chat.common.Uuids.toString(owner));
         preparedStatement.setString(4, body);
         preparedStatement.executeUpdate();
     }
 
 
-    public String[] readUsers() throws SQLException {
+    public Collection<User> readUsers() throws SQLException {
+
+        Collection<User> myUsers = new ArrayList<>();
+
+        // Statements allow to issue SQL queries to the database
+        Statement statement = connection.createStatement();
+        // Result set get the result of the SQL query
+        ResultSet ownerResultSet = statement
+                .executeQuery("select * from CodeUChat.Users");
+
+        while (ownerResultSet.next())
+        {
+            codeu.chat.common.Uuid myID = codeu.chat.common.Uuids.fromString(ownerResultSet.getString("id"));
+            String myName = ownerResultSet.getString("Name");
+            java.sql.Timestamp timestamp = ownerResultSet.getTimestamp("Time");
+            codeu.chat.common.Time myTime = new codeu.chat.common.Time(timestamp.getTime());
+
+            User myUser = new User(myID, myName, myTime);
+            myUsers.add(myUser);
+        }
+
+        return myUsers;
+
+    }
+
+
+    public String[] readUsersNames() throws SQLException {
 
         // Statements allow to issue SQL queries to the database
         Statement statement = connection.createStatement();
@@ -149,6 +185,29 @@ public class MySQLConnection{
             for (int i = 0; i < arr.length; i++) {
                 System.out.println(arr[i]);
             }
+        }
+
+        return arr;
+
+    }
+
+    public Collection<codeu.chat.common.Uuid> readUsersUuid() throws SQLException {
+
+        // Statements allow to issue SQL queries to the database
+        Statement statement = connection.createStatement();
+        // Result set get the result of the SQL query
+        ResultSet ownerResultSet = statement
+                .executeQuery("select distinct id from CodeUChat.Users");
+
+        Collection<codeu.chat.common.Uuid> arr = null;
+        while (ownerResultSet.next()) {
+            codeu.chat.common.Uuid em = codeu.chat.common.Uuids.fromString(ownerResultSet.getString("id"));
+            arr.add(em);
+
+//            arr = em.split("\n");
+//            for (int i = 0; i < arr.size(); i++) {
+//                System.out.println(arr[i]);
+//            }
         }
 
         return arr;

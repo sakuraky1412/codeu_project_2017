@@ -14,15 +14,16 @@
 
 package codeu.chat.server;
 
+import java.sql.SQLException;
 import java.util.Comparator;
 
 import codeu.chat.common.Conversation;
-import codeu.chat.common.ConversationSummary;
 import codeu.chat.common.LinearUuidGenerator;
 import codeu.chat.common.Message;
 import codeu.chat.common.Time;
 import codeu.chat.common.User;
 import codeu.chat.common.Uuid;
+import codeu.chat.util.mysql.MySQLConnection;
 import codeu.chat.util.store.Store;
 import codeu.chat.util.store.StoreAccessor;
 
@@ -74,6 +75,15 @@ public final class Model {
     userById.insert(user.id, user);
     userByTime.insert(user.creation, user);
     userByText.insert(user.name, user);
+
+
+    MySQLConnection conn = new MySQLConnection();
+    try {
+      conn.writeUsers(user.id, user.name);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
   }
 
   public StoreAccessor<Uuid, User> userById() {
@@ -92,10 +102,15 @@ public final class Model {
     return currentUserGeneration;
   }
 
-  public void add(Conversation conversation) {
+  public void add(Conversation conversation) throws SQLException {
     conversationById.insert(conversation.id, conversation);
     conversationByTime.insert(conversation.creation, conversation);
     conversationByText.insert(conversation.title, conversation);
+
+    MySQLConnection conn = new MySQLConnection();
+
+    conn.writeConversations(conversation.id, conversation.owner, conversation.title);
+
   }
 
   public StoreAccessor<Uuid, Conversation> conversationById() {

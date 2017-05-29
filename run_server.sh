@@ -15,4 +15,4 @@
 # limitations under the License.
 
 cd './bin'
-java codeu.chat.ServerMain "100.101" "ABABAB" "2007"
+java -cp .:/Users/mltaskova/Downloads/mysql-connector-java-6.0.5/mysql-connector-java-6.0.5-bin.jar codeu.chat.ServerMain "100.101" "ABABAB" "2007"

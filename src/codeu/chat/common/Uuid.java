@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package codeu.chat.common;
+package codeu.chat.util.store;
 
 public interface Uuid {
 
