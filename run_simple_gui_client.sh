@@ -18,4 +18,4 @@ LOCAL_MACHINE="localhost@2007"
 
 cd './bin'
 
-java codeu.chat.SimpleGuiClientMain "$LOCAL_MACHINE"
+java -cp .:/Users/christine/Downloads/mysql-connector-java-5.1.42/mysql-connector-java-5.1.42-bin.jar codeu.chat.SimpleGuiClientMain "$LOCAL_MACHINE"
