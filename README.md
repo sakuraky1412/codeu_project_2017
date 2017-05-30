@@ -66,7 +66,7 @@ All the source files (except test-related source files) are in
 use the supplied scripts to build the project, the `.class` files will be placed
 in `./bin`. There is a `./third_party` directory that holds the jar files for
 JUnit (a Java testing framework). Your environment may or may not already have
-this installed. The supplied scripts use the version in ./third_party.
+this installed. The supplied scripts use the version in `./third_party`.
 
 Finally, there are some high-level design documents in the project Wiki. Please
 review them as they can help you find your way around the sources.
