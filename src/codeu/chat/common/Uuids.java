@@ -181,7 +181,6 @@ public final class Uuids {
   //
   // Create a uuid from a sting.
   public static Uuid fromString(String string) throws NumberFormatException {
-    System.out.println(string);
 
     string = string.replaceAll("[^0-9.]","");
 

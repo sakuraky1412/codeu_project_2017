@@ -38,6 +38,7 @@ public final class Controller implements RawController, BasicController {
     this.uuidGenerator = new RandomUuidGenerator(serverId, System.currentTimeMillis());
     model.addExistingUsers();
     model.addExistingConversations();
+    model.addExistingMessages();
   }
 
   @Override

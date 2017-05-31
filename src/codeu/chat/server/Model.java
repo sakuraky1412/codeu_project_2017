@@ -87,6 +87,8 @@ public final class Model {
 
   }
 
+  //functions adding users, conversations, messages just to the server since they already exist in the database
+
   public void addSeparately(User user)
   {
     currentUserGeneration = userGenerations.make();
@@ -187,6 +189,18 @@ public final class Model {
       e.printStackTrace();
     }
 
+  }
+
+  public void addExistingMessages() throws SQLException
+  {
+    MySQLConnection conn = new MySQLConnection();
+
+//    Collection<Message> myMessages = conn.readMessages();
+//
+//    for (int i = 0 ; i < myMessages.size(); i++)
+//    {
+//      addSeparately((Message) myMessages.toArray()[i]);
+//    }
   }
 
   public StoreAccessor<Uuid, Message> messageById() {

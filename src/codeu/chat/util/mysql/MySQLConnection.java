@@ -1,6 +1,7 @@
 package codeu.chat.util.mysql;
 
 import codeu.chat.common.Conversation;
+import codeu.chat.common.Message;
 import codeu.chat.common.User;
 import codeu.chat.util.Uuid;
 
@@ -178,8 +179,6 @@ public class MySQLConnection{
             codeu.chat.common.Uuid myID = codeu.chat.common.Uuids.fromString(myResultSet.getString("id"));
             codeu.chat.common.Uuid myOwner = codeu.chat.common.Uuids.fromString(myResultSet.getString("Owner"));
 
-//            System.out.println(myID.toString());
-
             String myTitle = myResultSet.getString("Title");
             java.sql.Timestamp timestamp = myResultSet.getTimestamp("Time");
             codeu.chat.common.Time myTime = new codeu.chat.common.Time(timestamp.getTime());
@@ -220,38 +219,12 @@ public class MySQLConnection{
     }
 
     //read all the messages from owner
-    public String[] readMessages(Uuid owner) throws SQLException
+    public Collection<Message> readMessages(Uuid owner) throws SQLException
     {
-//        Connection connect = getConnection();
+        Collection<Message> myMessages = new ArrayList<>();
 
-        // Statements allow to issue SQL queries to the database
-        PreparedStatement statement = connection.prepareStatement("select Body from CodeUChat.Messages where Owner = ? ");
-        // Result set get the result of the SQL query
-
-        statement.setString(1, Uuid.toString(owner));
-
-        ResultSet ownerResultSet = statement
-                .executeQuery();
-        //writeResultSet(resultSet);
-
-        String[] arr = null;
-        while (ownerResultSet.next()) {
-            String em = ownerResultSet.getString("Body");
-            arr = em.split("\n");
-            for (int i = 0; i < arr.length; i++) {
-                System.out.println(arr[i]);
-            }
-        }
-
-        return arr;
+        return myMessages;
 
     }
-
-//    public void writeResultSet()
-//    {
-//        //writing owners into the current session so they can appear in the gui
-//    }
-
-
 
 }
