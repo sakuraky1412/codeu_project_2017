@@ -1,5 +1,6 @@
 package codeu.chat.util.mysql;
 
+import codeu.chat.common.Conversation;
 import codeu.chat.common.User;
 import codeu.chat.util.Uuid;
 
@@ -80,9 +81,6 @@ public class MySQLConnection{
     }
 
 
-
-    //WILL NEED TO MAKE SURE STRING AND VARCHAR ARE COMPATIBLE!!
-
     public void writeConversations(codeu.chat.common.Uuid id, codeu.chat.common.Uuid owner, String title) throws SQLException {
 //        Connection connect = getConnection();
 
@@ -113,13 +111,6 @@ public class MySQLConnection{
         preparedStatement.setString(2, name);
         preparedStatement.setTimestamp(3, timestamp);
         preparedStatement.executeUpdate();
-
-//        Collection<User> temp = readUsers();
-//        User[] temp2 = (User[]) temp.toArray();
-//        for (int i = 0; i < temp.size(); i++)
-//        {
-//            System.out.println(temp2[i].toString());
-//        }
 
     }
 
@@ -157,6 +148,7 @@ public class MySQLConnection{
         while (ownerResultSet.next())
         {
             codeu.chat.common.Uuid myID = codeu.chat.common.Uuids.fromString(ownerResultSet.getString("id"));
+
             String myName = ownerResultSet.getString("Name");
             java.sql.Timestamp timestamp = ownerResultSet.getTimestamp("Time");
             codeu.chat.common.Time myTime = new codeu.chat.common.Time(timestamp.getTime());
@@ -170,79 +162,61 @@ public class MySQLConnection{
     }
 
 
-    public String[] readUsersNames() throws SQLException {
+    public Collection<Conversation> readConversationsFromOwner(Uuid owner) throws SQLException {
 
-        // Statements allow to issue SQL queries to the database
-        Statement statement = connection.createStatement();
-        // Result set get the result of the SQL query
-        ResultSet ownerResultSet = statement
-                .executeQuery("select distinct Name from CodeUChat.Users");
+        Collection<Conversation> myConvos = new ArrayList<>();
 
-        String[] arr = null;
-        while (ownerResultSet.next()) {
-            String em = ownerResultSet.getString("Name");
-            arr = em.split("\n");
-            for (int i = 0; i < arr.length; i++) {
-                System.out.println(arr[i]);
-            }
-        }
-
-        return arr;
-
-    }
-
-    public Collection<codeu.chat.common.Uuid> readUsersUuid() throws SQLException {
-
-        // Statements allow to issue SQL queries to the database
-        Statement statement = connection.createStatement();
-        // Result set get the result of the SQL query
-        ResultSet ownerResultSet = statement
-                .executeQuery("select distinct id from CodeUChat.Users");
-
-        Collection<codeu.chat.common.Uuid> arr = null;
-        while (ownerResultSet.next()) {
-            codeu.chat.common.Uuid em = codeu.chat.common.Uuids.fromString(ownerResultSet.getString("id"));
-            arr.add(em);
-
-//            arr = em.split("\n");
-//            for (int i = 0; i < arr.size(); i++) {
-//                System.out.println(arr[i]);
-//            }
-        }
-
-        return arr;
-
-    }
-
-
-    public String[] readConversations(Uuid owner) throws SQLException {
-
-//        Connection connect = getConnection();
-
-//        // Statements allow to issue SQL queries to the database
-//        Statement statement = connection.createStatement();
-//        // Result set get the result of the SQL query
-        PreparedStatement statement = connection.prepareStatement("select * Title from CodeUChat.Conversations where Owner = ?");
+        PreparedStatement statement = connection.prepareStatement("select * from CodeUChat.Conversations where Owner = ?");
 
         statement.setString(1, Uuid.toString(owner));
 
-        ResultSet ownerResultSet = statement
+        ResultSet myResultSet = statement
                 .executeQuery();
 
-        String[] arr = null;
-        while (ownerResultSet.next()) {
-            String em = ownerResultSet.getString("Title");
-            arr = em.split("\n");
-            for (int i = 0; i < arr.length; i++) {
-                System.out.println(arr[i]);
-            }
+        while (myResultSet.next())
+        {
+            codeu.chat.common.Uuid myID = codeu.chat.common.Uuids.fromString(myResultSet.getString("id"));
+            codeu.chat.common.Uuid myOwner = codeu.chat.common.Uuids.fromString(myResultSet.getString("Owner"));
+
+//            System.out.println(myID.toString());
+
+            String myTitle = myResultSet.getString("Title");
+            java.sql.Timestamp timestamp = myResultSet.getTimestamp("Time");
+            codeu.chat.common.Time myTime = new codeu.chat.common.Time(timestamp.getTime());
+
+
+            codeu.chat.common.Conversation myConvo = new Conversation(myID, myOwner, myTime, myTitle);
+            myConvos.add(myConvo);
         }
 
-        return arr;
+        return myConvos;
+    }
 
-//        ResultSet titleResultSet = statement
-//                .executeQuery("select distinct Title from CodeUChat.Conversations");
-        //writeResultSet(resultSet);
+    public Collection<Conversation> readConversations() throws SQLException
+    {
+        Collection<Conversation> myConvos = new ArrayList<>();
+
+        // Statements allow to issue SQL queries to the database
+        Statement statement = connection.createStatement();
+        // Result set get the result of the SQL query
+        ResultSet myResultSet = statement
+                .executeQuery("select * from CodeUChat.Conversations");
+
+        while (myResultSet.next())
+        {
+            codeu.chat.common.Uuid myID = codeu.chat.common.Uuids.fromString(myResultSet.getString("id"));
+            codeu.chat.common.Uuid myOwner = codeu.chat.common.Uuids.fromString(myResultSet.getString("Owner"));
+
+            String myTitle = myResultSet.getString("Title");
+            java.sql.Timestamp timestamp = myResultSet.getTimestamp("Time");
+            codeu.chat.common.Time myTime = new codeu.chat.common.Time(timestamp.getTime());
+
+
+            codeu.chat.common.Conversation myConvo = new Conversation(myID, myOwner, myTime, myTitle);
+            myConvos.add(myConvo);
+        }
+
+        return myConvos;
     }
 
     //read all the messages from owner

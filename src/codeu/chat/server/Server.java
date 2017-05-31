@@ -49,7 +49,7 @@ public final class Server {
   private final Relay relay;
   private Uuid lastSeen = Uuids.NULL;
 
-  public Server(Uuid id, byte[] secret, Relay relay) {
+  public Server(Uuid id, byte[] secret, Relay relay) throws SQLException {
 
     this.id = id;
     this.secret = Arrays.copyOf(secret, secret.length);

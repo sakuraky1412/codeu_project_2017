@@ -58,7 +58,7 @@ public final class View implements BasicView, LogicalView{
 
     try (final Connection connection = source.connect()) {
 
-      users.addAll(conn.readUsers());
+//      users.addAll(conn.readUsers());
 
       Serializers.INTEGER.write(connection.out(), NetworkCode.GET_USERS_BY_ID_REQUEST);
       Serializers.collection(Uuids.SERIALIZER).write(connection.out(), ids);

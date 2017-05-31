@@ -15,6 +15,7 @@
 package codeu.chat.server;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Comparator;
 
 import codeu.chat.common.Conversation;
@@ -86,6 +87,42 @@ public final class Model {
 
   }
 
+  public void addSeparately(User user)
+  {
+    currentUserGeneration = userGenerations.make();
+
+    userById.insert(user.id, user);
+    userByTime.insert(user.creation, user);
+    userByText.insert(user.name, user);
+  }
+
+  public void addSeparately(Conversation conversation)
+  {
+    conversationById.insert(conversation.id, conversation);
+    conversationByTime.insert(conversation.creation, conversation);
+    conversationByText.insert(conversation.title, conversation);
+  }
+
+  public void addSeparately(Message message)
+  {
+    messageById.insert(message.id, message);
+    messageByTime.insert(message.creation, message);
+    messageByText.insert(message.content, message);
+  }
+
+  public void addExistingUsers() throws SQLException {
+
+    MySQLConnection conn = new MySQLConnection();
+
+    Collection<User> myUsers = conn.readUsers();
+
+    for (int i = 0 ; i < myUsers.size(); i++)
+    {
+      addSeparately((User) myUsers.toArray()[i]);
+    }
+
+  }
+
   public StoreAccessor<Uuid, User> userById() {
     return userById;
   }
@@ -113,6 +150,19 @@ public final class Model {
 
   }
 
+
+  public void addExistingConversations() throws SQLException {
+    MySQLConnection conn = new MySQLConnection();
+
+    Collection<Conversation> myConvos = conn.readConversations();
+
+    for (int i = 0 ; i < myConvos.size(); i++)
+    {
+      addSeparately((Conversation) myConvos.toArray()[i]);
+    }
+
+  }
+
   public StoreAccessor<Uuid, Conversation> conversationById() {
     return conversationById;
   }
@@ -129,6 +179,14 @@ public final class Model {
     messageById.insert(message.id, message);
     messageByTime.insert(message.creation, message);
     messageByText.insert(message.content, message);
+
+    MySQLConnection conn = new MySQLConnection();
+    try {
+      conn.writeMessages(message.id, message.author, message.content);
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
   }
 
   public StoreAccessor<Uuid, Message> messageById() {

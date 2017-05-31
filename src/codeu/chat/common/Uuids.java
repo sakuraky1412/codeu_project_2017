@@ -180,13 +180,17 @@ public final class Uuids {
   // FROM STRING
   //
   // Create a uuid from a sting.
-  public static Uuid fromString(String string) {
+  public static Uuid fromString(String string) throws NumberFormatException {
+    System.out.println(string);
+
+    string = string.replaceAll("[^0-9.]","");
+
     return fromString(null, string.split("\\."), 0);
   }
 
-  private static Uuid fromString(final Uuid root, String[] tokens, int index) {
+  private static Uuid fromString(final Uuid root, String[] tokens, int index) throws NumberFormatException {
 
-    final int id = Integer.parseInt(tokens[index]);
+    final int id = Integer.parseUnsignedInt(tokens[index]);
 
     final Uuid link = complete(new Uuid() {
       @Override

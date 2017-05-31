@@ -208,23 +208,6 @@ public final class View implements BasicView, LogicalView, SinglesView {
       }
     }
 
-    System.out.println("before conn");
-
-    MySQLConnection conn = new MySQLConnection();
-
-    System.out.println("before add");
-
-//    Collection<User> myUsers = conn.readUsers();
-//
-//    User[] userArr = (User[]) myUsers.toArray();
-//
-//    for (int i = 0 ; i < myUsers.size(); i++)
-//    {
-//        found.add((T) userArr[i]);
-//    }
-
-    System.out.println("after add");
-
     return found;
   }
 }

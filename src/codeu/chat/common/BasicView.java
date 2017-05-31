@@ -14,13 +14,8 @@
 
 package codeu.chat.common;
 
+import java.sql.SQLException;
 import java.util.Collection;
-
-import codeu.chat.common.Conversation;
-import codeu.chat.common.ConversationSummary;
-import codeu.chat.common.Message;
-import codeu.chat.common.User;
-import codeu.chat.common.Uuid;
 
 // BASIC VIEW
 //
@@ -35,7 +30,7 @@ public interface BasicView {
   // GET USERS
   //
   //   Return all users whose id is found in the given collection.
-  Collection<User> getUsers(Collection<Uuid> ids);
+  Collection<User> getUsers(Collection<Uuid> ids) throws SQLException;
 
   // GET ALL CONVERSATIONS
   //
@@ -45,11 +40,11 @@ public interface BasicView {
   // GET CONVERSATIONS
   //
   //   Return all conversations whose id is found in the given collection.
-  Collection<Conversation> getConversations(Collection<Uuid> ids);
+  Collection<Conversation> getConversations(Collection<Uuid> ids) throws SQLException;
 
   // GET MESSAGES
   //
   //   Return all messages whose id is found in the given collection.
-  Collection<Message> getMessages(Collection<Uuid> ids);
+  Collection<Message> getMessages(Collection<Uuid> ids) throws SQLException;
 
 }

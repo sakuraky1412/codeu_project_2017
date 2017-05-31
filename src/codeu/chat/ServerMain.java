@@ -16,6 +16,7 @@
 package codeu.chat;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import codeu.chat.common.Hub;
 import codeu.chat.common.Relay;
@@ -69,13 +70,15 @@ final class ServerMain {
 
       LOG.error(ex, "Failed to establish connections");
 
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
   }
 
   private static void runServer(Uuid id,
                                 byte[] secret,
                                 ConnectionSource serverSource,
-                                ConnectionSource relaySource) {
+                                ConnectionSource relaySource) throws SQLException {
 
     final Relay relay = relaySource == null ?
                         new NoOpRelay() :

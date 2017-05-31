@@ -33,9 +33,11 @@ public final class Controller implements RawController, BasicController {
   private final Model model;
   private final Uuid.Generator uuidGenerator;
 
-  public Controller(Uuid serverId, Model model) {
+  public Controller(Uuid serverId, Model model) throws SQLException {
     this.model = model;
     this.uuidGenerator = new RandomUuidGenerator(serverId, System.currentTimeMillis());
+    model.addExistingUsers();
+    model.addExistingConversations();
   }
 
   @Override
