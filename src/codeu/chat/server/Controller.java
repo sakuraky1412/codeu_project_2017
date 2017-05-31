@@ -14,8 +14,6 @@
 
 package codeu.chat.server;
 
-import java.util.Collection;
-
 import codeu.chat.common.BasicController;
 import codeu.chat.common.Conversation;
 import codeu.chat.common.Message;
@@ -26,6 +24,8 @@ import codeu.chat.common.Uuid;
 import codeu.chat.common.Uuids;
 import codeu.chat.util.Logger;
 
+import java.sql.SQLException;
+
 public final class Controller implements RawController, BasicController {
 
   private final static Logger.Log LOG = Logger.newLog(Controller.class);
@@ -33,9 +33,12 @@ public final class Controller implements RawController, BasicController {
   private final Model model;
   private final Uuid.Generator uuidGenerator;
 
-  public Controller(Uuid serverId, Model model) {
+  public Controller(Uuid serverId, Model model) throws SQLException {
     this.model = model;
     this.uuidGenerator = new RandomUuidGenerator(serverId, System.currentTimeMillis());
+    model.addExistingUsers();
+    model.addExistingConversations();
+    model.addExistingMessages();
   }
 
   @Override
@@ -53,7 +56,7 @@ public final class Controller implements RawController, BasicController {
   }
 
   @Override
-  public Conversation newConversation(String title, Uuid owner) {
+  public Conversation newConversation(String title, Uuid owner) throws SQLException {
     return newConversation(createId(), title, owner, Time.now());
   }
 
@@ -164,7 +167,7 @@ public final class Controller implements RawController, BasicController {
   }
 
   @Override
-  public Conversation newConversation(Uuid id, String title, Uuid owner, Time creationTime) {
+  public Conversation newConversation(Uuid id, String title, Uuid owner, Time creationTime) throws SQLException {
 
     final User foundOwner = model.userById().first(owner);
 

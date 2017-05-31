@@ -20,8 +20,6 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 
-import codeu.chat.common.Uuid;
-import codeu.chat.common.Uuids;
 import codeu.chat.util.Serializer;
 import codeu.chat.util.Serializers;
 

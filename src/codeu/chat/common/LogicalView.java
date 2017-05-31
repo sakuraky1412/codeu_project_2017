@@ -14,9 +14,8 @@
 
 package codeu.chat.common;
 
+import java.sql.SQLException;
 import java.util.Collection;
-
-import codeu.chat.common.Uuid;
 
 // LOGICAL VIEW
 //
@@ -34,7 +33,7 @@ public interface LogicalView {
   // GET USERS EXCLUDING
   //
   //   Get all users whose ID are not found in the given set of ids.
-  Collection<User> getUsersExcluding(Collection<Uuid> ids);
+  Collection<User> getUsersExcluding(Collection<Uuid> ids) throws SQLException;
 
   // GET CONVERSATIONS
   //

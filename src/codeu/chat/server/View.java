@@ -14,16 +14,12 @@
 
 package codeu.chat.server;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -37,6 +33,7 @@ import codeu.chat.common.Time;
 import codeu.chat.common.User;
 import codeu.chat.common.Uuid;
 import codeu.chat.util.Logger;
+import codeu.chat.util.mysql.MySQLConnection;
 import codeu.chat.util.store.StoreAccessor;
 
 public final class View implements BasicView, LogicalView, SinglesView {
@@ -51,7 +48,7 @@ public final class View implements BasicView, LogicalView, SinglesView {
 
 
   @Override
-  public Collection<User> getUsers(Collection<Uuid> ids) {
+  public Collection<User> getUsers(Collection<Uuid> ids) throws SQLException {
     return intersect(model.userById(), ids);
   }
 
@@ -69,12 +66,12 @@ public final class View implements BasicView, LogicalView, SinglesView {
   }
 
   @Override
-  public Collection<Conversation> getConversations(Collection<Uuid> ids) {
+  public Collection<Conversation> getConversations(Collection<Uuid> ids) throws SQLException {
     return intersect(model.conversationById(), ids);
   }
 
   @Override
-  public Collection<Message> getMessages(Collection<Uuid> ids) {
+  public Collection<Message> getMessages(Collection<Uuid> ids) throws SQLException {
     return intersect(model.messageById(), ids);
   }
 
@@ -84,7 +81,7 @@ public final class View implements BasicView, LogicalView, SinglesView {
   }
 
   @Override
-  public Collection<User> getUsersExcluding(Collection<Uuid> ids) {
+  public Collection<User> getUsersExcluding(Collection<Uuid> ids) throws SQLException {
 
     final Set<User> blacklist = new HashSet<>(intersect(model.userById(), ids));
     final Set<User> users = new HashSet<>();
@@ -191,7 +188,7 @@ public final class View implements BasicView, LogicalView, SinglesView {
   @Override
   public Message findMessage(Uuid id) { return model.messageById().first(id); }
 
-  private static <T> Collection<T> intersect(StoreAccessor<Uuid, T> store, Collection<Uuid> ids) {
+  private static <T> Collection<T> intersect(StoreAccessor<Uuid, T> store, Collection<Uuid> ids) throws SQLException {
 
     // Use a set to hold the found users as this will prevent duplicate ids from
     // yielding duplicates in the result.
