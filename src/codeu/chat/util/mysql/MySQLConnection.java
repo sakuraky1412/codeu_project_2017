@@ -21,7 +21,7 @@ public class MySQLConnection{
 
     private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/CodeUChat?autoReconnect=true&&useSSL=false";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "1869";
+    private static final String PASSWORD = "king";
 
     // Create connection object
     private Connection connection;
