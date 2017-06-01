@@ -14,16 +14,8 @@
 
 package codeu.chat.server;
 
-import java.util.Collection;
-
-import codeu.chat.common.BasicController;
-import codeu.chat.common.Conversation;
-import codeu.chat.common.Message;
-import codeu.chat.common.RawController;
-import codeu.chat.common.Time;
-import codeu.chat.common.User;
-import codeu.chat.common.Uuid;
-import codeu.chat.common.Uuids;
+import codeu.chat.common.*;
+import codeu.chat.common.RandomUuidGenerator;
 import codeu.chat.util.Logger;
 
 public final class Controller implements RawController, BasicController {

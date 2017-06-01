@@ -127,7 +127,7 @@ public final class View implements BasicView, LogicalView{
       Serializers.INTEGER.write(connection.out(), NetworkCode.GET_MESSAGES_BY_ID_REQUEST);
       Serializers.collection(Uuids.SERIALIZER).write(connection.out(), ids);
 
-      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_CONVERSATIONS_BY_ID_RESPONSE) {
+      if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_MESSAGES_BY_ID_RESPONSE) {
         messages.addAll(Serializers.collection(Message.SERIALIZER).read(connection.in()));
       } else {
         LOG.error("Response from server failed.");
