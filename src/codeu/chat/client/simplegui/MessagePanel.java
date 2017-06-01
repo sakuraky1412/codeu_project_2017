@@ -59,6 +59,7 @@ public final class MessagePanel extends JPanel implements ActionListener {
     private JButton encrypt;
     private JButton decrypt;
     private JButton send;
+    private final JButton updateButton = new JButton("Update");
     private final JButton addButton = new JButton("Add");
 
     /**
@@ -177,7 +178,8 @@ public final class MessagePanel extends JPanel implements ActionListener {
             cipherText = cipher.getText();
             plainText = strategy.decrypt(cipherText);
             plain.setText(plainText);
-        } else if (e.getSource() == addButton) {
+        }
+        else if (e.getSource() == addButton) {
             if (!clientContext.user.hasCurrent()) {
                 JOptionPane.showMessageDialog(MessagePanel.this, "You are not signed in.");
             } else if (!clientContext.conversation.hasCurrent()) {
@@ -203,7 +205,8 @@ public final class MessagePanel extends JPanel implements ActionListener {
                 }
             }
 
-        }else if (e.getSource() == send) {
+        }
+        else if (e.getSource() == send) {
             if (!clientContext.user.hasCurrent()) {
                 JOptionPane.showMessageDialog(MessagePanel.this, "You are not signed in.");
             } else if (!clientContext.conversation.hasCurrent()) {
@@ -226,7 +229,9 @@ public final class MessagePanel extends JPanel implements ActionListener {
                     }
                 }
             }
-
+        }
+        else if (e.getSource() == updateButton) {
+            MessagePanel.this.getAllMessages(clientContext.conversation.getCurrent());
         }
     }
 
@@ -343,6 +348,7 @@ public final class MessagePanel extends JPanel implements ActionListener {
         final JPanel buttonPanel = new JPanel();
         final GridBagConstraints buttonPanelC = new GridBagConstraints();
 
+        buttonPanel.add(updateButton);
         buttonPanel.add(addButton);
 
         // Placement of title, list panel, buttons, and current user panel.
@@ -372,6 +378,8 @@ public final class MessagePanel extends JPanel implements ActionListener {
         this.add(listShowPanel, listPanelC);
         this.add(buttonPanel, buttonPanelC);
 
+        // Update the current message panel
+        updateButton.addActionListener(this);
         // User click Messages Add button - prompt for message body and add new Message to Conversation
         addButton.addActionListener(this);
 

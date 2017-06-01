@@ -22,6 +22,7 @@ import codeu.chat.common.Time;
 import codeu.chat.common.User;
 import codeu.chat.common.Uuid;
 import codeu.chat.common.Uuids;
+import codeu.chat.common.RandomUuidGenerator;
 import codeu.chat.util.Logger;
 import codeu.chat.util.mysql.MySQLConnection;
 
