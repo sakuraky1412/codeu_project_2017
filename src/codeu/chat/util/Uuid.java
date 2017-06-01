@@ -197,7 +197,7 @@ public final class Uuid {
               tokens[index]));
       }
 
-      final Uuid link = new Uuid(root, (int)(id & 0xFFFFFFFF));
+    final Uuid link = new Uuid(root, (int)(id & 0xFFFFFFFF));
 
     final int nextIndex = index + 1;
 

@@ -231,6 +231,7 @@ public final class MessagePanel extends JPanel implements ActionListener {
             }
         }
         else if (e.getSource() == updateButton) {
+            clientContext.message.updateMessages(true);
             MessagePanel.this.getAllMessages(clientContext.conversation.getCurrent());
         }
     }
