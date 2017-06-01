@@ -17,10 +17,11 @@ package codeu.chat.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 
 public interface Serializer<T> {
 
-  void write(OutputStream out, T value) throws IOException;
+  void write(OutputStream out, T value) throws IOException, SQLException;
 
   T read(InputStream in) throws IOException;
 

@@ -16,9 +16,6 @@ package codeu.chat.common;
 
 import java.util.Collection;
 
-import codeu.chat.common.Time;
-import codeu.chat.common.Uuid;
-
 // RELAY
 //
 // This is the interface for communicating with the relay. Communication with the relay

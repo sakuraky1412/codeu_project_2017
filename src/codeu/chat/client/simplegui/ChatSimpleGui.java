@@ -15,6 +15,7 @@
 package codeu.chat.client.simplegui;
 
 import java.awt.*;
+import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.border.Border;
 
@@ -33,7 +34,7 @@ public final class ChatSimpleGui {
     private final ClientContext clientContext;
 
     // Constructor - sets up the Chat Application
-    public ChatSimpleGui(Controller controller, View view) {
+    public ChatSimpleGui(Controller controller, View view) throws SQLException {
         clientContext = new ClientContext(controller, view);
     }
 
@@ -59,7 +60,7 @@ public final class ChatSimpleGui {
     }
 
     // Initialize the GUI
-    private void initialize() {
+    private void initialize() throws SQLException {
 
         // Outermost frame.
         // NOTE: may have tweak size, or place in scrollable panel.
