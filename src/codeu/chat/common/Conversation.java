@@ -81,4 +81,17 @@ public final class Conversation {
     this.summary = new ConversationSummary(id, owner, creation, title);
 
   }
+
+  public Conversation(Uuid id, Uuid owner, Uuid firstMessage, Uuid lastMessage, Time creation, String title)
+  {
+
+    this.id = id;
+    this.owner = owner;
+    this.creation = creation;
+    this.title = title;
+    this.firstMessage = firstMessage;
+    this.lastMessage = lastMessage;
+
+    this.summary = new ConversationSummary(id, owner, creation, title);
+  }
 }

@@ -62,10 +62,14 @@ public final class Model {
   private final Store<Uuid, Conversation> conversationById = new Store<>(UUID_COMPARE);
   private final Store<Time, Conversation> conversationByTime = new Store<>(TIME_COMPARE);
   private final Store<String, Conversation> conversationByText = new Store<>(STRING_COMPARE);
+  private final Store<Uuid, Conversation> conversationByFirst = new Store<>(UUID_COMPARE);
+  private final Store<Uuid, Conversation> conversationByLast = new Store<>(UUID_COMPARE);
 
   private final Store<Uuid, Message> messageById = new Store<>(UUID_COMPARE);
   private final Store<Time, Message> messageByTime = new Store<>(TIME_COMPARE);
   private final Store<String, Message> messageByText = new Store<>(STRING_COMPARE);
+  private final Store<Uuid, Message> messageByNext = new Store<>(UUID_COMPARE);
+  private final Store<Uuid, Message> messageByPrev = new Store<>(UUID_COMPARE);
 
   private final Uuid.Generator userGenerations = new LinearUuidGenerator(null, 1, Integer.MAX_VALUE);
   private Uuid currentUserGeneration = userGenerations.make();
@@ -103,6 +107,8 @@ public final class Model {
     conversationById.insert(conversation.id, conversation);
     conversationByTime.insert(conversation.creation, conversation);
     conversationByText.insert(conversation.title, conversation);
+    conversationByFirst.insert(conversation.firstMessage, conversation);
+    conversationByLast.insert(conversation.lastMessage, conversation);
   }
 
   public void addSeparately(Message message)
@@ -110,6 +116,8 @@ public final class Model {
     messageById.insert(message.id, message);
     messageByTime.insert(message.creation, message);
     messageByText.insert(message.content, message);
+    messageByNext.insert(message.next, message);
+    messageByPrev.insert(message.previous, message);
   }
 
   public void addExistingUsers() throws SQLException {
@@ -177,6 +185,10 @@ public final class Model {
     return conversationByText;
   }
 
+  public StoreAccessor<Uuid, Conversation> conversationByFirst() { return conversationByFirst;}
+
+  public StoreAccessor<Uuid, Conversation> conversationByLast() { return conversationByLast;}
+
   public void add(Message message) {
     messageById.insert(message.id, message);
     messageByTime.insert(message.creation, message);
@@ -214,4 +226,8 @@ public final class Model {
   public StoreAccessor<String, Message> messageByText() {
     return messageByText;
   }
+
+  public StoreAccessor<Uuid, Message> messageByNext() {return messageByNext; }
+
+  public StoreAccessor<Uuid, Message> messageByPrev() {return messageByPrev; }
 }

@@ -216,13 +216,15 @@ public class MySQLConnection{
         {
             codeu.chat.common.Uuid myID = codeu.chat.common.Uuids.fromString(myResultSet.getString("id"));
             codeu.chat.common.Uuid myOwner = codeu.chat.common.Uuids.fromString(myResultSet.getString("Owner"));
+            codeu.chat.common.Uuid myFirst = codeu.chat.common.Uuids.fromString(myResultSet.getString("First"));
+            codeu.chat.common.Uuid myLast = codeu.chat.common.Uuids.fromString(myResultSet.getString("Last"));
 
             String myTitle = myResultSet.getString("Title");
             java.sql.Timestamp timestamp = myResultSet.getTimestamp("Time");
             codeu.chat.common.Time myTime = new codeu.chat.common.Time(timestamp.getTime());
 
 
-            codeu.chat.common.Conversation myConvo = new Conversation(myID, myOwner, myTime, myTitle);
+            codeu.chat.common.Conversation myConvo = new Conversation(myID, myOwner, myFirst, myLast, myTime, myTitle);
             myConvos.add(myConvo);
         }
 
@@ -244,13 +246,15 @@ public class MySQLConnection{
         {
             codeu.chat.common.Uuid myID = codeu.chat.common.Uuids.fromString(myResultSet.getString("id"));
             codeu.chat.common.Uuid myOwner = codeu.chat.common.Uuids.fromString(myResultSet.getString("Owner"));
+            codeu.chat.common.Uuid myNext = codeu.chat.common.Uuids.fromString(myResultSet.getString("Next"));
+            codeu.chat.common.Uuid myPrev = codeu.chat.common.Uuids.fromString(myResultSet.getString("Prev"));
 
             String myBody = myResultSet.getString("Body");
             java.sql.Timestamp timestamp = myResultSet.getTimestamp("Time");
             codeu.chat.common.Time myTime = new codeu.chat.common.Time(timestamp.getTime());
 
 
-            codeu.chat.common.Message myMessage = new Message(myID, myTime, myOwner, myBody);
+            codeu.chat.common.Message myMessage = new Message(myID, myNext, myPrev, myTime, myOwner, myBody);
             myMessages.add(myMessage);
         }
 
