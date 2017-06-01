@@ -17,6 +17,7 @@ package codeu.chat.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -28,7 +29,7 @@ public final class Conversation {
   public static final Serializer<Conversation> SERIALIZER = new Serializer<Conversation>() {
 
     @Override
-    public void write(OutputStream out, Conversation value) throws IOException {
+    public void write(OutputStream out, Conversation value) throws IOException, SQLException {
 
       Uuids.SERIALIZER.write(out, value.id);
       Uuids.SERIALIZER.write(out, value.owner);

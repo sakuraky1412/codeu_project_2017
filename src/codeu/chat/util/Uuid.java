@@ -18,6 +18,7 @@ import java.lang.StringBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.Objects;
 
 public final class Uuid {
@@ -27,7 +28,7 @@ public final class Uuid {
   public static final Serializer<Uuid> SERIALIZER = new Serializer<Uuid>() {
 
     @Override
-    public void write(OutputStream out, Uuid value) throws IOException {
+    public void write(OutputStream out, Uuid value) throws IOException, SQLException {
 
       int length = 0;
       for (Uuid current = value; current != null; current = current.root()) {

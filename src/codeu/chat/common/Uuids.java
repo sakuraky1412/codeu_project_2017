@@ -18,6 +18,7 @@ import java.lang.StringBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.Objects;
 
 import codeu.chat.util.Serializer;
@@ -38,7 +39,7 @@ public final class Uuids {
   public static final Serializer<Uuid> SERIALIZER = new Serializer<Uuid>() {
 
     @Override
-    public void write(OutputStream out, Uuid value) throws IOException {
+    public void write(OutputStream out, Uuid value) throws IOException, SQLException {
 
       int length = 0;
       for (Uuid current = value; current != null; current = current.root()) {

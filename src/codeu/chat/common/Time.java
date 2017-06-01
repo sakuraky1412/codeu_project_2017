@@ -17,6 +17,7 @@ package codeu.chat.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -28,7 +29,7 @@ public final class Time implements Comparable<Time> {
   public static final Serializer<Time> SERIALIZER = new Serializer<Time>() {
 
     @Override
-    public void write(OutputStream out, Time value) throws IOException {
+    public void write(OutputStream out, Time value) throws IOException, SQLException {
 
       Serializers.LONG.write(out, value.totalMs);
 

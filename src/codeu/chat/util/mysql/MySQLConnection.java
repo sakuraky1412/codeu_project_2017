@@ -88,14 +88,13 @@ public class MySQLConnection{
 
 
     public void writeConversations(codeu.chat.common.Uuid id, codeu.chat.common.Uuid owner, String title) throws SQLException {
-//        Connection connect = getConnection();
 
         java.util.Date date = new java.util.Date();
         java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
         // PreparedStatements can use variables and are more efficient
         PreparedStatement preparedStatement = connection
-                .prepareStatement("insert into  CodeUChat.Conversations values (?, ?, ?, ?)");
+                .prepareStatement("insert into  CodeUChat.Conversations (id, Owner, Title, Time) values (?, ?, ?, ?)");
         // Parameters start with 1
         preparedStatement.setString(1, codeu.chat.common.Uuids.toString(id));
         preparedStatement.setString(2, codeu.chat.common.Uuids.toString(owner));
@@ -104,18 +103,19 @@ public class MySQLConnection{
         preparedStatement.executeUpdate();
     }
 
-    public void writeUsers(codeu.chat.common.Uuid id, String name) throws SQLException {
+    public void writeUsers(codeu.chat.common.Uuid id, String name, String password) throws SQLException {
 
         java.util.Date date = new java.util.Date();
         java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
         // PreparedStatements can use variables and are more efficient
         PreparedStatement preparedStatement = connection
-                .prepareStatement("insert into  CodeUChat.Users values (?, ?, ?)");
+                .prepareStatement("insert into  CodeUChat.Users values (?, ?, ?, ?)");
         // Parameters start with 1
         preparedStatement.setString(1, codeu.chat.common.Uuids.toString(id));
         preparedStatement.setString(2, name);
-        preparedStatement.setTimestamp(3, timestamp);
+        preparedStatement.setString(3, password);
+        preparedStatement.setTimestamp(4, timestamp);
         preparedStatement.executeUpdate();
 
     }
@@ -123,23 +123,56 @@ public class MySQLConnection{
 
     public void writeMessages(codeu.chat.common.Uuid id, codeu.chat.common.Uuid owner, String body) throws SQLException
     {
-//        Connection connect = getConnection();
 
         // PreparedStatements can use variables and are more efficient
         PreparedStatement preparedStatement = connection
-                .prepareStatement("insert into  CodeUChat.Messages values (?, ?, ?, ?)");
+                .prepareStatement("insert into  CodeUChat.Messages (id, Time, Owner, Body) values (?, ?, ?, ?)");
 
         java.util.Date date = new java.util.Date();
         java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
         // Parameters start with 1
         preparedStatement.setString(1, codeu.chat.common.Uuids.toString(id));
+//        preparedStatement.setString(2, codeu.chat.common.Uuids.toString(next));
+//        preparedStatement.setString(3, codeu.chat.common.Uuids.toString(prev));
         preparedStatement.setTimestamp(2, timestamp);
         preparedStatement.setString(3, codeu.chat.common.Uuids.toString(owner));
         preparedStatement.setString(4, body);
         preparedStatement.executeUpdate();
     }
 
+
+    public void updateMessages(codeu.chat.common.Uuid next, codeu.chat.common.Uuid prev, codeu.chat.common.Uuid id) throws SQLException
+    {
+        PreparedStatement preparedStatement = connection
+                .prepareStatement("update CodeUChat.Messages set Next = ? , Prev = ? where id = ?");
+        // Parameters start with 1
+        preparedStatement.setString(1, codeu.chat.common.Uuids.toString(next));
+        preparedStatement.setString(2, codeu.chat.common.Uuids.toString(prev));
+        preparedStatement.setString(3, codeu.chat.common.Uuids.toString(id));
+        preparedStatement.executeUpdate();
+    }
+
+
+    public void updateConversations(codeu.chat.common.Uuid last, codeu.chat.common.Uuid id) throws SQLException
+    {
+        PreparedStatement preparedStatement = connection
+                .prepareStatement("update CodeUChat.Conversations set Last = ? where id = ?");
+        // Parameters start with 1
+        preparedStatement.setString(1, codeu.chat.common.Uuids.toString(last));
+        preparedStatement.setString(2, codeu.chat.common.Uuids.toString(id));
+        preparedStatement.executeUpdate();
+    }
+
+    public void setFirstConversations(codeu.chat.common.Uuid first, codeu.chat.common.Uuid id) throws SQLException
+    {
+        PreparedStatement preparedStatement = connection
+                .prepareStatement("update CodeUChat.Conversations set First = ? where id = ?");
+        // Parameters start with 1
+        preparedStatement.setString(1, codeu.chat.common.Uuids.toString(first));
+        preparedStatement.setString(2, codeu.chat.common.Uuids.toString(id));
+        preparedStatement.executeUpdate();
+    }
 
     public Collection<User> readUsers() throws SQLException {
 
@@ -156,10 +189,11 @@ public class MySQLConnection{
             codeu.chat.common.Uuid myID = codeu.chat.common.Uuids.fromString(ownerResultSet.getString("id"));
 
             String myName = ownerResultSet.getString("Name");
+            String myPass = ownerResultSet.getString("Password");
             java.sql.Timestamp timestamp = ownerResultSet.getTimestamp("Time");
             codeu.chat.common.Time myTime = new codeu.chat.common.Time(timestamp.getTime());
 
-            User myUser = new User(myID, myName, myTime);
+            User myUser = new User(myID, myName, myPass, myTime);
             myUsers.add(myUser);
         }
 
@@ -167,34 +201,6 @@ public class MySQLConnection{
 
     }
 
-
-    public Collection<Conversation> readConversationsFromOwner(Uuid owner) throws SQLException {
-
-        Collection<Conversation> myConvos = new ArrayList<>();
-
-        PreparedStatement statement = connection.prepareStatement("select * from CodeUChat.Conversations where Owner = ?");
-
-        statement.setString(1, Uuid.toString(owner));
-
-        ResultSet myResultSet = statement
-                .executeQuery();
-
-        while (myResultSet.next())
-        {
-            codeu.chat.common.Uuid myID = codeu.chat.common.Uuids.fromString(myResultSet.getString("id"));
-            codeu.chat.common.Uuid myOwner = codeu.chat.common.Uuids.fromString(myResultSet.getString("Owner"));
-
-            String myTitle = myResultSet.getString("Title");
-            java.sql.Timestamp timestamp = myResultSet.getTimestamp("Time");
-            codeu.chat.common.Time myTime = new codeu.chat.common.Time(timestamp.getTime());
-
-
-            codeu.chat.common.Conversation myConvo = new Conversation(myID, myOwner, myTime, myTitle);
-            myConvos.add(myConvo);
-        }
-
-        return myConvos;
-    }
 
     public Collection<Conversation> readConversations() throws SQLException
     {
@@ -223,10 +229,30 @@ public class MySQLConnection{
         return myConvos;
     }
 
-    //read all the messages from owner
-    public Collection<Message> readMessages(Uuid owner) throws SQLException
+
+    public Collection<Message> readMessages() throws SQLException
     {
         Collection<Message> myMessages = new ArrayList<>();
+
+        // Statements allow to issue SQL queries to the database
+        Statement statement = connection.createStatement();
+        // Result set get the result of the SQL query
+        ResultSet myResultSet = statement
+                .executeQuery("select * from CodeUChat.Messages");
+
+        while (myResultSet.next())
+        {
+            codeu.chat.common.Uuid myID = codeu.chat.common.Uuids.fromString(myResultSet.getString("id"));
+            codeu.chat.common.Uuid myOwner = codeu.chat.common.Uuids.fromString(myResultSet.getString("Owner"));
+
+            String myBody = myResultSet.getString("Body");
+            java.sql.Timestamp timestamp = myResultSet.getTimestamp("Time");
+            codeu.chat.common.Time myTime = new codeu.chat.common.Time(timestamp.getTime());
+
+
+            codeu.chat.common.Message myMessage = new Message(myID, myTime, myOwner, myBody);
+            myMessages.add(myMessage);
+        }
 
         return myMessages;
 

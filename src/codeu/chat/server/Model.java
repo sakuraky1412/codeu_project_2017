@@ -80,7 +80,7 @@ public final class Model {
 
     MySQLConnection conn = new MySQLConnection();
     try {
-      conn.writeUsers(user.id, user.name);
+      conn.writeUsers(user.id, user.name, user.pass);
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -195,12 +195,12 @@ public final class Model {
   {
     MySQLConnection conn = new MySQLConnection();
 
-//    Collection<Message> myMessages = conn.readMessages();
-//
-//    for (int i = 0 ; i < myMessages.size(); i++)
-//    {
-//      addSeparately((Message) myMessages.toArray()[i]);
-//    }
+    Collection<Message> myMessages = conn.readMessages();
+
+    for (int i = 0 ; i < myMessages.size(); i++)
+    {
+      addSeparately((Message) myMessages.toArray()[i]);
+    }
   }
 
   public StoreAccessor<Uuid, Message> messageById() {

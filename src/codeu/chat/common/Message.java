@@ -17,16 +17,18 @@ package codeu.chat.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 
 import codeu.chat.util.Serializer;
 import codeu.chat.util.Serializers;
+import codeu.chat.util.mysql.MySQLConnection;
 
 public final class Message {
 
   public static final Serializer<Message> SERIALIZER = new Serializer<Message>() {
 
     @Override
-    public void write(OutputStream out, Message value) throws IOException {
+    public void write(OutputStream out, Message value) throws IOException, SQLException {
 
       Uuids.SERIALIZER.write(out, value.id);
       Uuids.SERIALIZER.write(out, value.next);
@@ -34,6 +36,10 @@ public final class Message {
       Time.SERIALIZER.write(out, value.creation);
       Uuids.SERIALIZER.write(out, value.author);
       Serializers.STRING.write(out, value.content);
+
+      MySQLConnection conn  = new MySQLConnection();
+
+      conn.updateMessages(value.next, value.previous, value.id);
 
     }
 
@@ -53,7 +59,7 @@ public final class Message {
   };
 
   public final Uuid id;
-  public final Uuid previous;
+  public Uuid previous;
   public final Time creation;
   public final Uuid author;
   public final String content;
@@ -69,4 +75,16 @@ public final class Message {
     this.content = content;
 
   }
+
+  //I'm adding this constructor because I can't figure out how to otherwise retrieve the messages from the database
+
+  public Message(Uuid id, Time creation, Uuid author, String content) {
+
+    this.id = id;
+    this.creation = creation;
+    this.author = author;
+    this.content = content;
+
+  }
+
 }

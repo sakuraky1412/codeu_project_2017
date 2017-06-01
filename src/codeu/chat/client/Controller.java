@@ -33,11 +33,9 @@ public class Controller implements BasicController {
     private final static Logger.Log LOG = Logger.newLog(Controller.class);
 
     private final ConnectionSource source;
-    private final MySQLConnection mysqlConnection;
 
     public Controller(ConnectionSource source) {
         this.source = source;
-        this.mysqlConnection = new MySQLConnection();
     }
 
     @Override
@@ -52,8 +50,13 @@ public class Controller implements BasicController {
             Uuids.SERIALIZER.write(connection.out(), conversation);
             Serializers.STRING.write(connection.out(), body);
 
+            MySQLConnection conn = new MySQLConnection();
+
+
             if (Serializers.INTEGER.read(connection.in()) == NetworkCode.NEW_MESSAGE_RESPONSE) {
                 response = Serializers.nullable(Message.SERIALIZER).read(connection.in());
+                conn.updateMessages(response.previous, response.next, conversation);
+//                conn.updateConversations(response.id, conversation);
             } else {
                 LOG.error("Response from server failed.");
             }
