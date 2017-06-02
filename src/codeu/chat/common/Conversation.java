@@ -17,10 +17,11 @@ package codeu.chat.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import codeu.chat.common.Uuid;
+import codeu.chat.common.Uuids;
 import codeu.chat.util.Serializer;
 import codeu.chat.util.Serializers;
 
@@ -29,7 +30,7 @@ public final class Conversation {
   public static final Serializer<Conversation> SERIALIZER = new Serializer<Conversation>() {
 
     @Override
-    public void write(OutputStream out, Conversation value) throws IOException, SQLException {
+    public void write(OutputStream out, Conversation value) throws IOException {
 
       Uuids.SERIALIZER.write(out, value.id);
       Uuids.SERIALIZER.write(out, value.owner);
@@ -80,18 +81,5 @@ public final class Conversation {
 
     this.summary = new ConversationSummary(id, owner, creation, title);
 
-  }
-
-  public Conversation(Uuid id, Uuid owner, Uuid firstMessage, Uuid lastMessage, Time creation, String title)
-  {
-
-    this.id = id;
-    this.owner = owner;
-    this.creation = creation;
-    this.title = title;
-    this.firstMessage = firstMessage;
-    this.lastMessage = lastMessage;
-
-    this.summary = new ConversationSummary(id, owner, creation, title);
   }
 }

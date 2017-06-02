@@ -20,15 +20,13 @@ import codeu.chat.client.ClientUser;
 import codeu.chat.client.Controller;
 import codeu.chat.client.View;
 
-import java.sql.SQLException;
-
 public final class ClientContext {
 
   public final ClientUser user;
   public final ClientConversation conversation;
   public final ClientMessage message;
 
-  public ClientContext(Controller controller, View view) throws SQLException {
+  public ClientContext(Controller controller, View view) {
     user = new ClientUser(controller, view);
     conversation = new ClientConversation(controller, view, user);
     message = new ClientMessage(controller, view, user, conversation);

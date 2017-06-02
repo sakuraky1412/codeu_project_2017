@@ -15,7 +15,6 @@
 package codeu.chat;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 import codeu.chat.client.commandline.Chat;
@@ -30,7 +29,7 @@ final class ClientMain {
 
   private static final Logger.Log LOG = Logger.newLog(ClientMain.class);
 
-  public static void main(String [] args) throws SQLException {
+  public static void main(String [] args) {
 
     try {
       Logger.enableFileOutput("chat_client_log.log");
