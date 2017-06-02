@@ -14,13 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-HOST="$1"
-PORT="$2"
-
-if [[ "$HOST" == "" || "$PORT" == "" ]] ; then
-  echo 'usage: <HOST> <PORT>'
-  exit 1
-fi
+LOCAL_MACHINE="localhost@2007"
 
 cd './bin'
-java codeu.chat.ClientMain "$HOST@$PORT"
+
+java -cp .:/Users/christine/IdeaProjects/codeu/third_party/mysql-connector-java-5.1.42-bin.jar codeu.chat.ClientMain "$LOCAL_MACHINE"

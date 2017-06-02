@@ -14,16 +14,9 @@
 
 package codeu.chat.server;
 
-import java.util.Collection;
-
-import codeu.chat.common.BasicController;
-import codeu.chat.common.Conversation;
-import codeu.chat.common.Message;
-import codeu.chat.common.RawController;
-import codeu.chat.common.User;
+import codeu.chat.common.*;
+import codeu.chat.common.RandomUuidGenerator;
 import codeu.chat.util.Logger;
-import codeu.chat.util.Time;
-import codeu.chat.util.Uuid;
 
 public final class Controller implements RawController, BasicController {
 
@@ -47,6 +40,10 @@ public final class Controller implements RawController, BasicController {
     return newUser(createId(), name, Time.now());
   }
 
+  public User newUser(String name, String pass) {
+    return newUser(createId(), name, pass, Time.now());
+  }
+
   @Override
   public Conversation newConversation(String title, Uuid owner) {
     return newConversation(createId(), title, owner, Time.now());
@@ -62,14 +59,14 @@ public final class Controller implements RawController, BasicController {
 
     if (foundUser != null && foundConversation != null && isIdFree(id)) {
 
-      message = new Message(id, Uuid.NULL, Uuid.NULL, creationTime, author, body);
+      message = new Message(id, Uuids.NULL, Uuids.NULL, creationTime, author, body);
       model.add(message);
       LOG.info("Message added: %s", message.id);
 
       // Find and update the previous "last" message so that it's "next" value
       // will point to the new message.
 
-      if (Uuid.equals(foundConversation.lastMessage, Uuid.NULL)) {
+      if (Uuids.equals(foundConversation.lastMessage, Uuids.NULL)) {
 
         // The conversation has no messages in it, that's why the last message is NULL (the first
         // message should be NULL too. Since there is no last message, then it is not possible
@@ -85,7 +82,7 @@ public final class Controller implements RawController, BasicController {
       // not change.
 
       foundConversation.firstMessage =
-          Uuid.equals(foundConversation.firstMessage, Uuid.NULL) ?
+          Uuids.equals(foundConversation.firstMessage, Uuids.NULL) ?
           message.id :
           foundConversation.firstMessage;
 
@@ -124,6 +121,35 @@ public final class Controller implements RawController, BasicController {
           id,
           name,
           creationTime);
+    }
+
+    return user;
+  }
+
+  public User newUser(Uuid id, String name, String pass, Time creationTime) {
+
+    User user = null;
+
+    if (isIdFree(id)) {
+
+      user = new User(id, name, pass, creationTime);
+      model.add(user);
+
+      LOG.info(
+              "newUser success (user.id=%s user.name=%s user.pass=%s user.time=%s)",
+              id,
+              name,
+              pass,
+              creationTime);
+
+    } else {
+
+      LOG.info(
+              "newUser fail - id in use (user.id=%s user.name=%s user.pass=%s user.time=%s)",
+              id,
+              name,
+              pass,
+              creationTime);
     }
 
     return user;
