@@ -17,8 +17,9 @@ package codeu.chat.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
 
+import codeu.chat.common.Uuid;
+import codeu.chat.common.Uuids;
 import codeu.chat.util.Serializer;
 import codeu.chat.util.Serializers;
 
@@ -27,7 +28,7 @@ public final class ConversationSummary implements ListViewable {
   public static final Serializer<ConversationSummary> SERIALIZER = new Serializer<ConversationSummary>() {
 
     @Override
-    public void write(OutputStream out, ConversationSummary value) throws IOException, SQLException {
+    public void write(OutputStream out, ConversationSummary value) throws IOException {
 
       Uuids.SERIALIZER.write(out, value.id);
       Uuids.SERIALIZER.write(out, value.owner);

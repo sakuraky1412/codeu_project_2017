@@ -26,8 +26,6 @@ import codeu.chat.common.User;
 import codeu.chat.common.Uuid;
 import codeu.chat.common.Uuids;
 
-import java.sql.SQLException;
-
 public final class RawControllerTest {
 
   private Model model;
@@ -38,7 +36,7 @@ public final class RawControllerTest {
   private Uuid messageId;
 
   @Before
-  public void doBefore() throws SQLException {
+  public void doBefore() {
     model = new Model();
     controller = new Controller(Uuids.NULL, model);
 
@@ -61,7 +59,7 @@ public final class RawControllerTest {
   }
 
   @Test
-  public void testAddConversation() throws SQLException {
+  public void testAddConversation() {
 
     final User user = controller.newUser(userId, "user", Time.now());
 
@@ -87,7 +85,7 @@ public final class RawControllerTest {
   }
 
   @Test
-  public void testAddMessage() throws SQLException {
+  public void testAddMessage() {
 
     final User user = controller.newUser(userId, "user", Time.now());
 

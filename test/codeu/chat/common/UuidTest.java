@@ -15,7 +15,6 @@
 package codeu.chat.common;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 import org.junit.BeforeClass;
 import org.junit.AfterClass;

@@ -18,7 +18,6 @@ package codeu.chat.client.simplegui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.border.Border;
 
@@ -189,19 +188,11 @@ public final class MessagePanel extends JPanel implements ActionListener {
                         MessagePanel.this, "Enter message:", "Add Message", JOptionPane.PLAIN_MESSAGE,
                         null, null, "");
                 if (messageText != null && messageText.length() > 0) {
-                    try {
-                        clientContext.message.addMessage(
-                                clientContext.user.getCurrent().id,
-                                clientContext.conversation.getCurrentId(),
-                                messageText);
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                    try {
-                        MessagePanel.this.getAllMessages(clientContext.conversation.getCurrent());
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
+                    clientContext.message.addMessage(
+                            clientContext.user.getCurrent().id,
+                            clientContext.conversation.getCurrentId(),
+                            messageText);
+                    MessagePanel.this.getAllMessages(clientContext.conversation.getCurrent());
                 }
             }
 
@@ -214,19 +205,11 @@ public final class MessagePanel extends JPanel implements ActionListener {
             } else {
                 final String messageText = cipher.getText();
                 if (messageText != null && messageText.length() > 0) {
-                    try {
-                        clientContext.message.addMessage(
-                                clientContext.user.getCurrent().id,
-                                clientContext.conversation.getCurrentId(),
-                                messageText);
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
-                    try {
-                        MessagePanel.this.getAllMessages(clientContext.conversation.getCurrent());
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
+                    clientContext.message.addMessage(
+                            clientContext.user.getCurrent().id,
+                            clientContext.conversation.getCurrentId(),
+                            messageText);
+                    MessagePanel.this.getAllMessages(clientContext.conversation.getCurrent());
                 }
             }
         }
@@ -258,7 +241,7 @@ public final class MessagePanel extends JPanel implements ActionListener {
         }
     }
 
-    public MessagePanel(ClientContext clientContext) throws SQLException {
+    public MessagePanel(ClientContext clientContext) {
         super(new GridBagLayout());
         this.clientContext = clientContext;
         initialize();
@@ -277,7 +260,7 @@ public final class MessagePanel extends JPanel implements ActionListener {
     }
 
     // External agent calls this to trigger an update of this panel's contents.
-    public void update(ConversationSummary owningConversation) throws SQLException {
+    public void update(ConversationSummary owningConversation) {
 
         final User u = (owningConversation == null) ?
                 null :
@@ -293,7 +276,7 @@ public final class MessagePanel extends JPanel implements ActionListener {
         getAllMessages(owningConversation);
     }
 
-    private void initialize() throws SQLException {
+    private void initialize() {
 
         // This panel contains the messages in the current conversation.
         // It has a title bar with the current conversation and owner,
@@ -390,7 +373,7 @@ public final class MessagePanel extends JPanel implements ActionListener {
 
     // Populate ListModel
     // TODO: don't refetch messages if current conversation not changed
-    private void getAllMessages(ConversationSummary conversation) throws SQLException {
+    private void getAllMessages(ConversationSummary conversation) {
         userListArea.setText("");
 
         for (final Message m : clientContext.message.getConversationContents(conversation)) {
