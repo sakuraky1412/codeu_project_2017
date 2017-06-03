@@ -18,14 +18,12 @@ package codeu.chat.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 
 import codeu.chat.common.Conversation;
 import codeu.chat.common.ConversationSummary;
-import codeu.chat.common.LinearUuidGenerator;
 import codeu.chat.common.Message;
 import codeu.chat.common.NetworkCode;
 import codeu.chat.common.Relay;
@@ -51,7 +49,7 @@ public final class Server {
   private final Relay relay;
   private Uuid lastSeen = Uuids.NULL;
 
-  public Server(Uuid id, byte[] secret, Relay relay) {
+  public Server(Uuid id, byte[] secret, Relay relay) throws SQLException {
 
     this.id = id;
     this.secret = Arrays.copyOf(secret, secret.length);
@@ -74,7 +72,7 @@ public final class Server {
     return onMessage(connection.in(), connection.out());
   }
 
-  private boolean onMessage(InputStream in, OutputStream out) throws IOException {
+  private boolean onMessage(InputStream in, OutputStream out) throws IOException, SQLException {
 
     final int type = Serializers.INTEGER.read(in);
 
@@ -219,7 +217,7 @@ public final class Server {
     return true;
   }
 
-  private void onBundle(Relay.Bundle bundle) {
+  private void onBundle(Relay.Bundle bundle) throws SQLException {
 
     final Relay.Bundle.Component relayUser = bundle.user();
     final Relay.Bundle.Component relayConversation = bundle.conversation();

@@ -14,6 +14,7 @@
 
 package codeu.chat.client;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import codeu.chat.common.Uuid;
 import codeu.chat.common.Uuids;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Method;
+import codeu.chat.util.mysql.MySQLConnection;
 
 public final class ClientMessage {
 
@@ -48,7 +50,7 @@ public final class ClientMessage {
     private final ClientConversation conversationContext;
 
     public ClientMessage(Controller controller, View view, ClientUser userContext,
-                         ClientConversation conversationContext) {
+                         ClientConversation conversationContext) throws SQLException {
         this.controller = controller;
         this.view = view;
         this.userContext = userContext;
@@ -81,7 +83,7 @@ public final class ClientMessage {
         printMessage(current, userContext);
     }
 
-    public void resetCurrent(boolean replaceAll) {
+    public void resetCurrent(boolean replaceAll) throws SQLException {
         updateMessages(replaceAll);
     }
 
@@ -89,7 +91,8 @@ public final class ClientMessage {
         return (conversationContents == null) ? 0 : conversationContents.size();
     }
 
-    public List<Message> getConversationContents(ConversationSummary summary) {
+    public List<Message> getConversationContents(ConversationSummary summary) throws SQLException {
+
         if (conversationHead == null || summary == null || !conversationHead.id.equals(summary.id)) {
             updateMessages(summary, true);
         }
@@ -97,7 +100,7 @@ public final class ClientMessage {
     }
 
     // For m-add command.
-    public void addMessage(Uuid author, Uuid conversation, String body) {
+    public void addMessage(Uuid author, Uuid conversation, String body) throws SQLException {
         final boolean validInputs = isValidBody(body) && (author != null) && (conversation != null);
 
         final Message message = (validInputs) ? controller.newMessage(author, conversation, body) : null;
@@ -182,13 +185,13 @@ public final class ClientMessage {
 
     // Update the list of messages for the current conversation.
     // Currently rereads the entire message chain.
-    public void updateMessages(boolean replaceAll) {
+    public void updateMessages(boolean replaceAll) throws SQLException {
         updateMessages(conversationContext.getCurrent(), replaceAll);
     }
 
     // Update the list of messages for the given conversation.
     // Currently rereads the entire message chain.
-    public void updateMessages(ConversationSummary conversation, boolean replaceAll) {
+    public void updateMessages(ConversationSummary conversation, boolean replaceAll) throws SQLException {
         if (conversation == null) {
             LOG.error("conversation argument is null - do nothing.");
             return;
@@ -197,6 +200,7 @@ public final class ClientMessage {
         if (conversationHead == null) {
             LOG.info("ConversationHead is null");
         } else {
+
             LOG.info("ConversationHead: Title=\"%s\" UUID=%s first=%s last=%s\n",
                     conversationHead.title, conversationHead.id, conversationHead.firstMessage,
                     conversationHead.lastMessage);
