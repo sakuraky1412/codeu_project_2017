@@ -14,17 +14,15 @@
 
 package codeu.chat.server;
 
-import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Comparator;
 
 import codeu.chat.common.Conversation;
+import codeu.chat.common.ConversationSummary;
 import codeu.chat.common.LinearUuidGenerator;
 import codeu.chat.common.Message;
 import codeu.chat.common.Time;
 import codeu.chat.common.User;
 import codeu.chat.common.Uuid;
-import codeu.chat.util.mysql.MySQLConnection;
 import codeu.chat.util.store.Store;
 import codeu.chat.util.store.StoreAccessor;
 
@@ -62,14 +60,10 @@ public final class Model {
   private final Store<Uuid, Conversation> conversationById = new Store<>(UUID_COMPARE);
   private final Store<Time, Conversation> conversationByTime = new Store<>(TIME_COMPARE);
   private final Store<String, Conversation> conversationByText = new Store<>(STRING_COMPARE);
-  private final Store<Uuid, Conversation> conversationByFirst = new Store<>(UUID_COMPARE);
-  private final Store<Uuid, Conversation> conversationByLast = new Store<>(UUID_COMPARE);
 
   private final Store<Uuid, Message> messageById = new Store<>(UUID_COMPARE);
   private final Store<Time, Message> messageByTime = new Store<>(TIME_COMPARE);
   private final Store<String, Message> messageByText = new Store<>(STRING_COMPARE);
-  private final Store<Uuid, Message> messageByNext = new Store<>(UUID_COMPARE);
-  private final Store<Uuid, Message> messageByPrev = new Store<>(UUID_COMPARE);
 
   private final Uuid.Generator userGenerations = new LinearUuidGenerator(null, 1, Integer.MAX_VALUE);
   private Uuid currentUserGeneration = userGenerations.make();
@@ -80,57 +74,6 @@ public final class Model {
     userById.insert(user.id, user);
     userByTime.insert(user.creation, user);
     userByText.insert(user.name, user);
-
-
-    MySQLConnection conn = new MySQLConnection();
-    try {
-      conn.writeUsers(user.id, user.name, user.pass);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-
-  }
-
-  //functions adding users, conversations, messages just to the server since they already exist in the database
-
-  public void addSeparately(User user)
-  {
-    currentUserGeneration = userGenerations.make();
-
-    userById.insert(user.id, user);
-    userByTime.insert(user.creation, user);
-    userByText.insert(user.name, user);
-  }
-
-  public void addSeparately(Conversation conversation)
-  {
-    conversationById.insert(conversation.id, conversation);
-    conversationByTime.insert(conversation.creation, conversation);
-    conversationByText.insert(conversation.title, conversation);
-    conversationByFirst.insert(conversation.firstMessage, conversation);
-    conversationByLast.insert(conversation.lastMessage, conversation);
-  }
-
-  public void addSeparately(Message message)
-  {
-    messageById.insert(message.id, message);
-    messageByTime.insert(message.creation, message);
-    messageByText.insert(message.content, message);
-    messageByNext.insert(message.next, message);
-    messageByPrev.insert(message.previous, message);
-  }
-
-  public void addExistingUsers() throws SQLException {
-
-    MySQLConnection conn = new MySQLConnection();
-
-    Collection<User> myUsers = conn.readUsers();
-
-    for (int i = 0 ; i < myUsers.size(); i++)
-    {
-      addSeparately((User) myUsers.toArray()[i]);
-    }
-
   }
 
   public StoreAccessor<Uuid, User> userById() {
@@ -149,28 +92,10 @@ public final class Model {
     return currentUserGeneration;
   }
 
-  public void add(Conversation conversation) throws SQLException {
+  public void add(Conversation conversation) {
     conversationById.insert(conversation.id, conversation);
     conversationByTime.insert(conversation.creation, conversation);
     conversationByText.insert(conversation.title, conversation);
-
-    MySQLConnection conn = new MySQLConnection();
-
-    conn.writeConversations(conversation.id, conversation.owner, conversation.title);
-
-  }
-
-
-  public void addExistingConversations() throws SQLException {
-    MySQLConnection conn = new MySQLConnection();
-
-    Collection<Conversation> myConvos = conn.readConversations();
-
-    for (int i = 0 ; i < myConvos.size(); i++)
-    {
-      addSeparately((Conversation) myConvos.toArray()[i]);
-    }
-
   }
 
   public StoreAccessor<Uuid, Conversation> conversationById() {
@@ -185,34 +110,10 @@ public final class Model {
     return conversationByText;
   }
 
-  public StoreAccessor<Uuid, Conversation> conversationByFirst() { return conversationByFirst;}
-
-  public StoreAccessor<Uuid, Conversation> conversationByLast() { return conversationByLast;}
-
   public void add(Message message) {
     messageById.insert(message.id, message);
     messageByTime.insert(message.creation, message);
     messageByText.insert(message.content, message);
-
-    MySQLConnection conn = new MySQLConnection();
-    try {
-      conn.writeMessages(message.id, message.author, message.content);
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-
-  }
-
-  public void addExistingMessages() throws SQLException
-  {
-    MySQLConnection conn = new MySQLConnection();
-
-    Collection<Message> myMessages = conn.readMessages();
-
-    for (int i = 0 ; i < myMessages.size(); i++)
-    {
-      addSeparately((Message) myMessages.toArray()[i]);
-    }
   }
 
   public StoreAccessor<Uuid, Message> messageById() {
@@ -226,8 +127,4 @@ public final class Model {
   public StoreAccessor<String, Message> messageByText() {
     return messageByText;
   }
-
-  public StoreAccessor<Uuid, Message> messageByNext() {return messageByNext; }
-
-  public StoreAccessor<Uuid, Message> messageByPrev() {return messageByPrev; }
 }

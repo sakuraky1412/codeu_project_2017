@@ -14,6 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# IMPORTANT: Please do not run this file to test, this will result in a null pointer exception.
-
-java -cp ./third_party/mysql-connector-java-5.1.42-bin.jar:./third_party/junit4.jar:./bin codeu.chat.TestRunner
+java -cp ./third_party/junit4.jar:./bin codeu.chat.TestRunner

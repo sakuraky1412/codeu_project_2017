@@ -14,19 +14,9 @@
 
 package codeu.chat.server;
 
-import codeu.chat.common.BasicController;
-import codeu.chat.common.Conversation;
-import codeu.chat.common.Message;
-import codeu.chat.common.RawController;
-import codeu.chat.common.Time;
-import codeu.chat.common.User;
-import codeu.chat.common.Uuid;
-import codeu.chat.common.Uuids;
+import codeu.chat.common.*;
 import codeu.chat.common.RandomUuidGenerator;
 import codeu.chat.util.Logger;
-import codeu.chat.util.mysql.MySQLConnection;
-
-import java.sql.SQLException;
 
 public final class Controller implements RawController, BasicController {
 
@@ -35,16 +25,13 @@ public final class Controller implements RawController, BasicController {
   private final Model model;
   private final Uuid.Generator uuidGenerator;
 
-  public Controller(Uuid serverId, Model model) throws SQLException {
+  public Controller(Uuid serverId, Model model) {
     this.model = model;
     this.uuidGenerator = new RandomUuidGenerator(serverId, System.currentTimeMillis());
-    model.addExistingUsers();
-    model.addExistingConversations();
-    model.addExistingMessages();
   }
 
   @Override
-  public Message newMessage(Uuid author, Uuid conversation, String body) throws SQLException {
+  public Message newMessage(Uuid author, Uuid conversation, String body) {
     return newMessage(createId(), author, conversation, body, Time.now());
   }
 
@@ -58,14 +45,12 @@ public final class Controller implements RawController, BasicController {
   }
 
   @Override
-  public Conversation newConversation(String title, Uuid owner) throws SQLException {
+  public Conversation newConversation(String title, Uuid owner) {
     return newConversation(createId(), title, owner, Time.now());
   }
 
   @Override
-  public Message newMessage(Uuid id, Uuid author, Uuid conversation, String body, Time creationTime) throws SQLException {
-
-    MySQLConnection conn = new MySQLConnection();
+  public Message newMessage(Uuid id, Uuid author, Uuid conversation, String body, Time creationTime) {
 
     final User foundUser = model.userById().first(author);
     final Conversation foundConversation = model.conversationById().first(conversation);
@@ -90,8 +75,6 @@ public final class Controller implements RawController, BasicController {
       } else {
         final Message lastMessage = model.messageById().first(foundConversation.lastMessage);
         lastMessage.next = message.id;
-        conn.updateMessages(message.id, message.previous, foundConversation.id);
-        conn.updateConversations(message.id, foundConversation.id);
       }
 
       // If the first message points to NULL it means that the conversation was empty and that
@@ -102,12 +85,10 @@ public final class Controller implements RawController, BasicController {
           Uuids.equals(foundConversation.firstMessage, Uuids.NULL) ?
           message.id :
           foundConversation.firstMessage;
-          conn.setFirstConversations(foundConversation.firstMessage, foundConversation.id);
 
       // Update the conversation to point to the new last message as it has changed.
 
       foundConversation.lastMessage = message.id;
-      conn.updateConversations(message.id, foundConversation.id);
 
       if (!foundConversation.users.contains(foundUser)) {
         foundConversation.users.add(foundUser.id);
@@ -175,7 +156,7 @@ public final class Controller implements RawController, BasicController {
   }
 
   @Override
-  public Conversation newConversation(Uuid id, String title, Uuid owner, Time creationTime) throws SQLException {
+  public Conversation newConversation(Uuid id, String title, Uuid owner, Time creationTime) {
 
     final User foundOwner = model.userById().first(owner);
 

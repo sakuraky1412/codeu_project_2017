@@ -14,7 +14,6 @@
 
 package codeu.chat.client;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +23,6 @@ import codeu.chat.common.ConversationSummary;
 import codeu.chat.common.Uuid;
 import codeu.chat.util.Logger;
 import codeu.chat.util.Method;
-import codeu.chat.util.mysql.MySQLConnection;
 import codeu.chat.util.store.Store;
 
 public final class ClientConversation {
@@ -47,11 +45,10 @@ public final class ClientConversation {
   private Store<String, ConversationSummary> summariesSortedByTitle =
       new Store<>(String.CASE_INSENSITIVE_ORDER);
 
-  public ClientConversation(Controller controller, View view, ClientUser userContext) throws SQLException {
+  public ClientConversation(Controller controller, View view, ClientUser userContext) {
     this.controller = controller;
     this.view = view;
     this.userContext = userContext;
-
   }
 
   public void setMessageContext(ClientMessage messageContext) {
@@ -89,7 +86,7 @@ public final class ClientConversation {
     printConversation(currentSummary, userContext);
   }
 
-  public void startConversation(String title, Uuid owner) throws SQLException {
+  public void startConversation(String title, Uuid owner) {
     final boolean validInputs = isValidTitle(title);
 
     final Conversation conv = (validInputs) ? controller.newConversation(title, owner) : null;
@@ -108,7 +105,7 @@ public final class ClientConversation {
 
   public void setCurrent(ConversationSummary conv) { currentSummary = conv; }
 
-  public void showAllConversations() throws SQLException {
+  public void showAllConversations() {
     updateAllConversations(false);
 
     for (final ConversationSummary c : summariesByUuid.values()) {
@@ -132,7 +129,7 @@ public final class ClientConversation {
     Method.notImplemented();
   }
 
-  private void updateCurrentConversation() throws SQLException {
+  private void updateCurrentConversation() {
     if (currentSummary == null) {
       currentConversation = null;
     } else {
@@ -144,7 +141,6 @@ public final class ClientConversation {
         LOG.info("Get Conversation: Title=\"%s\" UUID=%s first=%s last=%s\n",
             currentConversation.title, currentConversation.id, currentConversation.firstMessage,
             currentConversation.lastMessage);
-
       }
     }
   }
@@ -160,7 +156,7 @@ public final class ClientConversation {
   // Update the list of known Conversations.
   // If the input currentChanged is true, then re-establish the state of
   // the current Conversation, including its messages.
-  public void updateAllConversations(boolean currentChanged) throws SQLException {
+  public void updateAllConversations(boolean currentChanged) {
 
     summariesByUuid.clear();
     summariesSortedByTitle = new Store<>(String.CASE_INSENSITIVE_ORDER);

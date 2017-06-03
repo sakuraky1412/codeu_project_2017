@@ -18,7 +18,6 @@ import java.lang.StringBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.Objects;
 
 import codeu.chat.util.Serializer;
@@ -39,7 +38,7 @@ public final class Uuids {
   public static final Serializer<Uuid> SERIALIZER = new Serializer<Uuid>() {
 
     @Override
-    public void write(OutputStream out, Uuid value) throws IOException, SQLException {
+    public void write(OutputStream out, Uuid value) throws IOException {
 
       int length = 0;
       for (Uuid current = value; current != null; current = current.root()) {
@@ -181,16 +180,13 @@ public final class Uuids {
   // FROM STRING
   //
   // Create a uuid from a sting.
-  public static Uuid fromString(String string) throws NumberFormatException {
-
-    string = string.replaceAll("[^0-9.]","");
-
+  public static Uuid fromString(String string) {
     return fromString(null, string.split("\\."), 0);
   }
 
-  private static Uuid fromString(final Uuid root, String[] tokens, int index) throws NumberFormatException {
+  private static Uuid fromString(final Uuid root, String[] tokens, int index) {
 
-    final int id = Integer.parseUnsignedInt(tokens[index]);
+    final int id = Integer.parseInt(tokens[index]);
 
     final Uuid link = complete(new Uuid() {
       @Override

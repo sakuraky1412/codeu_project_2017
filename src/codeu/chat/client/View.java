@@ -31,7 +31,6 @@ import codeu.chat.util.Logger;
 import codeu.chat.util.Serializers;
 import codeu.chat.util.connections.Connection;
 import codeu.chat.util.connections.ConnectionSource;
-import codeu.chat.util.mysql.MySQLConnection;
 
 // VIEW
 //
@@ -44,11 +43,8 @@ public final class View implements BasicView, LogicalView{
 
   private final ConnectionSource source;
 
-  private MySQLConnection conn;
-
   public View(ConnectionSource source) {
     this.source = source;
-    this.conn = new MySQLConnection();
   }
 
   @Override
@@ -58,15 +54,11 @@ public final class View implements BasicView, LogicalView{
 
     try (final Connection connection = source.connect()) {
 
-//      users.addAll(conn.readUsers());
-
       Serializers.INTEGER.write(connection.out(), NetworkCode.GET_USERS_BY_ID_REQUEST);
       Serializers.collection(Uuids.SERIALIZER).write(connection.out(), ids);
 
       if (Serializers.INTEGER.read(connection.in()) == NetworkCode.GET_USERS_BY_ID_RESPONSE) {
         users.addAll(Serializers.collection(User.SERIALIZER).read(connection.in()));
-
-
       } else {
         LOG.error("Response from server failed.");
       }

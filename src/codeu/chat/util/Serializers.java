@@ -17,7 +17,6 @@ package codeu.chat.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -89,7 +88,7 @@ public final class Serializers {
   public static final Serializer<byte[]> BYTES = new Serializer<byte[]>() {
 
     @Override
-    public void write(OutputStream out, byte[] value) throws IOException, SQLException {
+    public void write(OutputStream out, byte[] value) throws IOException {
 
       INTEGER.write(out, value.length);
       out.write(value);
@@ -114,7 +113,7 @@ public final class Serializers {
   public static final Serializer<String> STRING = new Serializer<String>() {
 
     @Override
-    public void write(OutputStream out, String value) throws IOException, SQLException {
+    public void write(OutputStream out, String value) throws IOException {
 
       BYTES.write(out, value.getBytes());
 
@@ -133,7 +132,7 @@ public final class Serializers {
     return new Serializer<Collection<T>>() {
 
       @Override
-      public void write(OutputStream out, Collection<T> value) throws IOException, SQLException {
+      public void write(OutputStream out, Collection<T> value) throws IOException {
         INTEGER.write(out, value.size());
         for (final T x : value) {
           serializer.write(out, x);
@@ -160,7 +159,7 @@ public final class Serializers {
     return new Serializer<T>() {
 
       @Override
-      public void write(OutputStream out, T value) throws IOException, SQLException {
+      public void write(OutputStream out, T value) throws IOException {
         if (value == null) {
           out.write(NO_VALUE);
         } else {

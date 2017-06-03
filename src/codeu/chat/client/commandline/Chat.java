@@ -14,7 +14,6 @@
 
 package codeu.chat.client.commandline;
 
-import java.sql.SQLException;
 import java.util.Scanner;
 
 import codeu.chat.client.ClientContext;
@@ -37,7 +36,7 @@ public final class Chat {
     private final ClientContext clientContext;
 
     // Constructor - sets up the Chat Application
-    public Chat(Controller controller, View view) throws SQLException {
+    public Chat(Controller controller, View view) {
         clientContext = new ClientContext(controller, view);
     }
 
@@ -69,7 +68,7 @@ public final class Chat {
     }
 
     // Parse and execute a single command.
-    private void doOneCommand(Scanner lineScanner) throws SQLException {
+    private void doOneCommand(Scanner lineScanner) {
 
         final Scanner tokenScanner = new Scanner(lineScanner.nextLine());
         if (!tokenScanner.hasNext()) {
@@ -292,7 +291,7 @@ public final class Chat {
         return alive;
     }
 
-    public void selectConversation(Scanner lineScanner) throws SQLException {
+    public void selectConversation(Scanner lineScanner) {
 
         clientContext.conversation.updateAllConversations(false);
         final int selectionSize = clientContext.conversation.conversationsCount();

@@ -17,7 +17,6 @@ package codeu.chat.relay;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.Collection;
 
 import codeu.chat.common.NetworkCode;
@@ -57,7 +56,7 @@ public final class ServerFrontEnd {
     }
 
     @Override
-    public void write(OutputStream out, Relay.Bundle.Component value) throws IOException, SQLException {
+    public void write(OutputStream out, Relay.Bundle.Component value) throws IOException {
       Uuids.SERIALIZER.write(out, value.id());
       Serializers.STRING.write(out, value.text());
       Time.SERIALIZER.write(out, value.time());
@@ -94,7 +93,7 @@ public final class ServerFrontEnd {
     }
 
     @Override
-    public void write(OutputStream out, Relay.Bundle value) throws IOException, SQLException {
+    public void write(OutputStream out, Relay.Bundle value) throws IOException {
       Uuids.SERIALIZER.write(out, value.id());
       Time.SERIALIZER.write(out, value.time());
       Uuids.SERIALIZER.write(out, value.team());
@@ -110,7 +109,7 @@ public final class ServerFrontEnd {
     this.backEnd = backEnd;
   }
 
-  public void handleConnection(Connection connection) throws IOException, SQLException {
+  public void handleConnection(Connection connection) throws IOException {
 
     LOG.info("Handling Connection - start");
 
@@ -122,7 +121,7 @@ public final class ServerFrontEnd {
     LOG.info("Handling Connection - end");
   }
 
-  private void handleReadMessage(Connection connection) throws IOException, SQLException {
+  private void handleReadMessage(Connection connection) throws IOException {
 
     LOG.info("Handling Read Message - start");
 
@@ -147,7 +146,7 @@ public final class ServerFrontEnd {
     LOG.info("Handling Read Message - end");
   }
 
-  private void handleWriteMessage(Connection connection) throws IOException, SQLException {
+  private void handleWriteMessage(Connection connection) throws IOException {
 
     LOG.info("Handling Write Message - start");
 

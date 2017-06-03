@@ -17,7 +17,6 @@ package codeu.chat.client.simplegui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -33,14 +32,14 @@ public final class ConversationPanel extends JPanel {
     private final ClientContext clientContext;
     private final MessagePanel messagePanel;
 
-    public ConversationPanel(ClientContext clientContext, MessagePanel messagePanel) throws SQLException {
+    public ConversationPanel(ClientContext clientContext, MessagePanel messagePanel) {
         super(new GridBagLayout());
         this.clientContext = clientContext;
         this.messagePanel = messagePanel;
         initialize();
     }
 
-    private void initialize() throws SQLException {
+    private void initialize() {
 
         // This panel contains from top to bottom: a title bar,
         // a list of conversations, and a button bar.
@@ -118,11 +117,7 @@ public final class ConversationPanel extends JPanel {
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    ConversationPanel.this.getAllConversations(listModel);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
+                ConversationPanel.this.getAllConversations(listModel);
             }
         });
 
@@ -135,16 +130,8 @@ public final class ConversationPanel extends JPanel {
                             ConversationPanel.this, "Enter title:", "Add Conversation", JOptionPane.PLAIN_MESSAGE,
                             null, null, "");
                     if (s != null && s.length() > 0) {
-                        try {
-                            clientContext.conversation.startConversation(s, clientContext.user.getCurrent().id);
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
-                        try {
-                            ConversationPanel.this.getAllConversations(listModel);
-                        } catch (SQLException e1) {
-                            e1.printStackTrace();
-                        }
+                        clientContext.conversation.startConversation(s, clientContext.user.getCurrent().id);
+                        ConversationPanel.this.getAllConversations(listModel);
                     }
                 } else {
                     JOptionPane.showMessageDialog(ConversationPanel.this, "You are not signed in.");
@@ -163,11 +150,7 @@ public final class ConversationPanel extends JPanel {
 
                     clientContext.conversation.setCurrent(cs);
 
-                    try {
-                        messagePanel.update(cs);
-                    } catch (SQLException e1) {
-                        e1.printStackTrace();
-                    }
+                    messagePanel.update(cs);
                 }
             }
         });
@@ -176,7 +159,7 @@ public final class ConversationPanel extends JPanel {
     }
 
     // Populate ListModel - updates display objects.
-    private void getAllConversations(DefaultListModel<String> convDisplayList) throws SQLException {
+    private void getAllConversations(DefaultListModel<String> convDisplayList) {
 
         clientContext.conversation.updateAllConversations(false);
         convDisplayList.clear();
