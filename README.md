@@ -30,7 +30,7 @@ JAVA&nbsp;7 when working with this project.
 
   1. To test the project:
   
-  IMPORTANT: Please do not run this file to test, this will result in a null pointer exception.
+  IMPORTANT: Please do not run this file to test, this will result in a null pointer exception. Please see further explanation in personal summary.
   
        ```
        $ sh test.sh
