@@ -15,6 +15,7 @@
 package codeu.chat;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import codeu.chat.client.Controller;
 import codeu.chat.client.simplegui.ChatSimpleGui;
@@ -60,7 +61,7 @@ final class SimpleGuiClientMain {
     }
   }
 
-  private static void runClient(Controller controller, View view) {
+  private static void runClient(Controller controller, View view) throws SQLException {
 
     final ChatSimpleGui chatSimpleGui = new ChatSimpleGui(controller, view);
 

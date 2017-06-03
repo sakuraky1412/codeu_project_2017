@@ -17,6 +17,7 @@ package codeu.chat.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -71,7 +72,7 @@ public final class RemoteRelay implements Relay {
     }
 
     @Override
-    public void write(OutputStream out, Relay.Bundle.Component value) throws IOException {
+    public void write(OutputStream out, Relay.Bundle.Component value) throws IOException, SQLException {
       Uuids.SERIALIZER.write(out, value.id());
       Serializers.STRING.write(out, value.text());
       Time.SERIALIZER.write(out, value.time());
@@ -108,7 +109,7 @@ public final class RemoteRelay implements Relay {
     }
 
     @Override
-    public void write(OutputStream out, Relay.Bundle value) throws IOException {
+    public void write(OutputStream out, Relay.Bundle value) throws IOException, SQLException {
       Uuids.SERIALIZER.write(out, value.id());
       Time.SERIALIZER.write(out, value.time());
       Uuids.SERIALIZER.write(out, value.team());
