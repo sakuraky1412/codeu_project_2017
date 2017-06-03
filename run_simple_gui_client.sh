@@ -18,4 +18,4 @@ LOCAL_MACHINE="localhost@2007"
 
 cd './bin'
 
-java -cp .:/Users/christine/IdeaProjects/untitled/third_party/mysql-connector-java-5.1.42-bin.jar codeu.chat.SimpleGuiClientMain "$LOCAL_MACHINE"
+java -cp .:/Users/christine/IdeaProjects/codeu/third_party/mysql-connector-java-5.1.42-bin.jar codeu.chat.SimpleGuiClientMain "$LOCAL_MACHINE"
