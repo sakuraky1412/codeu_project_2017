@@ -17,18 +17,17 @@ package codeu.chat.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 
 import codeu.chat.util.Serializer;
 import codeu.chat.util.Serializers;
-import codeu.chat.common.Uuid;
-import codeu.chat.common.Uuids;
 
 public final class User {
 
     public static final Serializer<User> SERIALIZER = new Serializer<User>() {
 
         @Override
-        public void write(OutputStream out, User value) throws IOException {
+        public void write(OutputStream out, User value) throws IOException, SQLException {
 
             Uuids.SERIALIZER.write(out, value.id);
             Serializers.STRING.write(out, value.name);

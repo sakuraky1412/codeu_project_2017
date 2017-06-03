@@ -15,118 +15,116 @@
 package codeu.chat.util;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
 import java.io.IOException;
 
 public final class UuidTest {
 
-    @Test
-    public void testBadId() {
-        assertNotNull(Uuid.NULL);
-        assertEquals(Uuid.NULL.root(), null);
-        assertEquals(Uuid.NULL.id(), 0);
-    }
+  @Test
+  public void testBadId() {
+    assertNotNull(Uuid.NULL);
+    assertEquals(Uuid.NULL.root(), null);
+    assertEquals(Uuid.NULL.id(), 0);
+  }
 
-    @Test
-    public void testEqualsNoRoot() {
-        final Uuid u1 = new Uuid(5);
-        final Uuid u2 = new Uuid(5);
-        assertTrue(Uuid.equals(u1, u1));
-        assertTrue(Uuid.equals(u2, u2));
-        assertTrue(Uuid.equals(u1, u2));
-        assertTrue(Uuid.equals(u2, u1));
-    }
+  @Test
+  public void testEqualsNoRoot() {
+    final Uuid u1 = new Uuid(5);
+    final Uuid u2 = new Uuid(5);
+    assertTrue(Uuid.equals(u1, u1));
+    assertTrue(Uuid.equals(u2, u2));
+    assertTrue(Uuid.equals(u1, u2));
+    assertTrue(Uuid.equals(u2, u1));
+  }
 
-    @Test
-    public void testEqualsWithRoot() {
-        final Uuid r1 = new Uuid(3);
-        final Uuid r2 = new Uuid(3);
+  @Test
+  public void testEqualsWithRoot() {
+    final Uuid r1 = new Uuid(3);
+    final Uuid r2 = new Uuid(3);
 
-        final Uuid u1 = new Uuid(r1, 5);
-        final Uuid u2 = new Uuid(r2, 5);
+    final Uuid u1 = new Uuid(r1, 5);
+    final Uuid u2 = new Uuid(r2, 5);
 
-        assertTrue(Uuid.equals(u1, u1));
-        assertTrue(Uuid.equals(u2, u2));
-        assertTrue(Uuid.equals(u1, u2));
-        assertTrue(Uuid.equals(u2, u1));
-    }
+    assertTrue(Uuid.equals(u1, u1));
+    assertTrue(Uuid.equals(u2, u2));
+    assertTrue(Uuid.equals(u1, u2));
+    assertTrue(Uuid.equals(u2, u1));
+  }
 
-    @Test
-    public void testNotEqualsNoRoot() {
-        final Uuid u1 = new Uuid(5);
-        final Uuid u2 = new Uuid(3);
-        assertFalse(Uuid.equals(u1, u2));
-        assertFalse(Uuid.equals(u2, u1));
-    }
+  @Test
+  public void testNotEqualsNoRoot() {
+    final Uuid u1 = new Uuid(5);
+    final Uuid u2 = new Uuid(3);
+    assertFalse(Uuid.equals(u1, u2));
+    assertFalse(Uuid.equals(u2, u1));
+  }
 
-    @Test
-    public void testNotEqualsWithRoot() {
-        final Uuid r1 = new Uuid(1);
-        final Uuid r2 = new Uuid(3);
+  @Test
+  public void testNotEqualsWithRoot() {
+    final Uuid r1 = new Uuid(1);
+    final Uuid r2 = new Uuid(3);
 
-        final Uuid u1 = new Uuid(r1, 5);
-        final Uuid u2 = new Uuid(r2, 5);
+    final Uuid u1 = new Uuid(r1, 5);
+    final Uuid u2 = new Uuid(r2, 5);
 
-        assertFalse(Uuid.equals(u1, u2));
-        assertFalse(Uuid.equals(u2, u1));
-    }
+    assertFalse(Uuid.equals(u1, u2));
+    assertFalse(Uuid.equals(u2, u1));
+  }
 
-    @Test
-    public void testNotEqualsMixLength() {
-        final Uuid r1 = new Uuid(1);
+  @Test
+  public void testNotEqualsMixLength() {
+    final Uuid r1 = new Uuid(1);
 
-        final Uuid u1 = new Uuid(r1, 5);
-        final Uuid u2 = new Uuid(5);
+    final Uuid u1 = new Uuid(r1, 5);
+    final Uuid u2 = new Uuid(5);
 
-        assertFalse(Uuid.equals(u1, u2));
-        assertFalse(Uuid.equals(u2, u1));
-    }
+    assertFalse(Uuid.equals(u1, u2));
+    assertFalse(Uuid.equals(u2, u1));
+  }
 
-    @Test
-    public void testRootEqual() {
-        final Uuid r = new Uuid(1);
+  @Test
+  public void testRootEqual() {
+    final Uuid r = new Uuid(1);
 
-        final Uuid u1 = new Uuid(r, 2);
-        final Uuid u2 = new Uuid(r, 3);
+    final Uuid u1 = new Uuid(r, 2);
+    final Uuid u2 = new Uuid(r, 3);
 
-        assertTrue(Uuid.related(u1, u2));
-    }
+    assertTrue(Uuid.related(u1, u2));
+  }
 
-    @Test
-    public void testRootEqualNot() {
-        final Uuid r1 = new Uuid(1);
-        final Uuid r2 = new Uuid(2);
+  @Test
+  public void testRootEqualNot() {
+    final Uuid r1 = new Uuid(1);
+    final Uuid r2 = new Uuid(2);
 
-        final Uuid u1 = new Uuid(r1, 3);
-        final Uuid u2 = new Uuid(r2, 4);
+    final Uuid u1 = new Uuid(r1, 3);
+    final Uuid u2 = new Uuid(r2, 4);
 
-        assertFalse(Uuid.related(u1, u2));
-    }
+    assertFalse(Uuid.related(u1, u2));
+  }
 
-    @Test
-    public void testValidSingleLink() throws IOException {
+  @Test
+  public void testValidSingleLink() throws IOException {
 
-        final String string = "100";
-        final Uuid id = Uuid.parse(string);
+    final String string = "100";
+    final Uuid id = Uuid.parse(string);
 
-        assertNotNull(id);
-        assertNull(id.root());
-        assertEquals(id.id(), 100);
-    }
+    assertNotNull(id);
+    assertNull(id.root());
+    assertEquals(id.id(), 100);
+  }
 
-    @Test
-    public void testValidMultiLink() throws IOException {
+  @Test
+  public void testValidMultiLink() throws IOException {
 
-        final String string = "100.200";
-        final Uuid id = Uuid.parse(string);
+    final String string = "100.200";
+    final Uuid id = Uuid.parse(string);
 
-        assertNotNull(id);
-        assertNotNull(id.root());
-        assertNull(id.root().root());
+    assertNotNull(id);
+    assertNotNull(id.root());
+    assertNull(id.root().root());
 
-        assertEquals(id.id(), 200);
-        assertEquals(id.root().id(), 100);
-    }
+    assertEquals(id.id(), 200);
+    assertEquals(id.root().id(), 100);
+  }
 }
